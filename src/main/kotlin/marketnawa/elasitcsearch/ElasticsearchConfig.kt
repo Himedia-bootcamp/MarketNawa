@@ -1,30 +1,14 @@
 package marketnawa.elasitcsearch
 
-import org.apache.http.HttpHost
-import org.elasticsearch.client.RestClient
-import org.elasticsearch.client.RestHighLevelClient
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.elasticsearch.client.ClientConfiguration
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration
 
 @Configuration
-class ElasticSearchConfig {
-
-    @Value("\${es.url}")
-    private val hostname: String? = null // localhost
-
-    @Value("\${es.port}")
-    private val port: Int? = null // 9200
-
-    @Bean
-    fun restHighLevelClient(): RestHighLevelClient {
-        return RestHighLevelClient(
-            RestClient.builder(
-                HttpHost(
-                    hostname,
-                    port!!, "http"
-                )
-            )
-        )
+class ElasticsearchConfig : ElasticsearchConfiguration() {
+    override fun clientConfiguration(): ClientConfiguration {
+        return ClientConfiguration.builder()
+            .connectedTo("localhost:9200")
+            .build()
     }
 }
