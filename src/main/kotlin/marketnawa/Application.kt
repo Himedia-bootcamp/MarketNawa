@@ -3,6 +3,8 @@ package marketnawa
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery
 import marketnawa.crawling.product.gmarket.GmarketCrawler
 import marketnawa.crawling.category.danawa.getFoodCategoryDetails
+import marketnawa.crawling.product.coupang.CoupCrawler
+import marketnawa.crawling.product.ssg.SsgCrawler
 import marketnawa.domain.Category
 import marketnawa.util.IndexingUtil
 import org.springframework.beans.factory.annotation.Value
@@ -12,6 +14,7 @@ import org.springframework.context.annotation.Bean
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.RestClient
 import org.apache.http.HttpHost
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.client.elc.NativeQuery
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
@@ -74,10 +77,17 @@ fun main(args: Array<String>) {
     val elasticsearchOperations = context.getBean("elasticsearchOperations", ElasticsearchOperations::class.java)
     val stream : SearchHitsIterator<Category> = findAllCategory(elasticsearchOperations)
     while (stream.hasNext()) {
-        val gmarketCrawler = GmarketCrawler(stream.next().content, elasticsearchOperations)
+        val category = stream.next().content
+        val gmarketCrawler = GmarketCrawler(category, elasticsearchOperations)
+        val ssgCrawler = SsgCrawler(category, elasticsearchOperations)
+        val coupCrawler = CoupCrawler(category, elasticsearchOperations)
+        ssgCrawler.execute()
+
         gmarketCrawler.execute()
+        coupCrawler.execute()
     }
     stream.close()
+
 //
 //    // Category 크롤링 실행
 //    val categories = getFoodCategoryDetails(restHighLevelClient, indexingUtil)

@@ -1,11 +1,14 @@
 package marketnawa.crawling.product.coupang
 
 import com.google.gson.Gson
+import marketnawa.domain.Category
 import marketnawa.domain.Item
+import marketnawa.domain.MarketFood
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxOptions
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 
 //문자열에서 숫자 추출
 fun extractPrice(text: String): String {
@@ -13,34 +16,41 @@ fun extractPrice(text: String): String {
     return regex.replace(text, "")
 }
 
-fun main(){
-    val searchValueList: List<String> = listOf("콜라")
+class CoupCrawler(
+    val category: Category,
+    private val elasticsearchOperations: ElasticsearchOperations
+) {
+    fun execute() {
 
-    val url = "https://www.coupang.com"
+        val url = "https://www.coupang.com"
 
-    val webDriverID = "webdriver.gecko.driver"
-    val webDriverPath = "/Users/seung/Downloads/geckodriver"
-    System.setProperty(webDriverID, webDriverPath)
+        val webDriverID = "webdriver.gecko.driver"
+        val webDriverPath = "/Users/seung/Downloads/geckodriver"
+        System.setProperty(webDriverID, webDriverPath)
 
-    val options = FirefoxOptions()
-    options.addArguments("--headless") // 브라우저를 화면에 표시하지 않고 실행 (옵션)
+        val options = FirefoxOptions()
+        options.addArguments("--headless") // 브라우저를 화면에 표시하지 않고 실행 (옵션)
 
-    val driver: WebDriver = FirefoxDriver(options)
+        val driver: WebDriver = FirefoxDriver(options)
 
-    try{
-        for(i in 1 .. searchValueList.size) {
-            val searchValue = searchValueList.get(i - 1)
-            println(searchValue)
+        try {
+            val searchText = category.searchText
 
-            val itemList: MutableList<Item> = mutableListOf()
-
-            for(j in 1 .. 10){
-                val searchUrl = "/np/search?q=${searchValue}&listSize=72&page=$j"
+            for (j in 1..10) {
+                val searchUrl = "/np/search?q=${searchText}&listSize=72&page=$j"
 
                 driver.get(url + searchUrl)
 
-                val products = driver.findElements(By.cssSelector("#productList > li.search-product:not(.search-product__ad-badge)"))
-//                println(products.size)
+                val products = try {
+                    driver.findElements(By.cssSelector("#productList > li.search-product:not(.search-product__ad-badge)"))
+                } catch (e: NoSuchElementException) {
+                    break
+                }
+
+                // 페이지에 제품이 없으면 루프 종료
+                if (products.isEmpty()) {
+                    break
+                }
 
                 for (product in products) {
                     val itemName = product.findElement(By.cssSelector(".name")).text.replace("\n", "")
@@ -52,19 +62,30 @@ fun main(){
                     val itemLink = product.findElement(By.cssSelector("a")).getAttribute("href")
                     val item = Item(itemName, itemPrice.toInt(), itemImg, itemId, itemLink)
 
-                    itemList.add(item)
+                    val marketFood: MarketFood? = MarketFood(
+                        foodMarketBrand = "Coupang",
+                        foodId = itemId,
+                        foodDescription = "",
+                        foodPrice = itemPrice.toInt(),
+                        foodInfo = itemId,
+                        foodName = itemName,
+                        representativeName = itemLink,
+                        detailCategory = itemImg,
+                        secondCategory = category.secondCategory,
+                        lastCategory = category.lastCategory,
+                        firstCategory = category.firstCategory
+                    )
+
+                    if (marketFood != null) {
+                        elasticsearchOperations.save(marketFood)
+                    }
                 }
                 driver.manage().deleteAllCookies()
-
-                val gson = Gson()
-                val json = gson.toJson(itemList)
-//                println(json)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            driver.quit()
         }
-    }catch (e: Exception){
-        e.printStackTrace()
-    }finally {
-        driver.quit()
     }
-
 }
