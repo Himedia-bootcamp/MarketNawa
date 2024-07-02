@@ -1,0 +1,22 @@
+name: 'Market Nawa_FE Issue Template'
+description: 'Market Nawa Frontend 레포지토리에 이슈를 생성합니다.'
+title: '이슈 이름을 작성해주세요'
+labels: []
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        <h1 style="justify-content: center; display: flex">🥕 Market Nawa - FE 🥕️</h1>
+        <h3> 🌈 Function Implementation </h3>
+  - type: textarea
+    id: function_implementation
+    attributes:
+      label: '아슈사항'
+      description: '여기에 목록 형식으로 이슈사항에 대해 작성해주세요'
+      value: |
+        - 이슈사항에 대해 작성 부탁드립니다.(삭제하고 작성해주세요)
+        - 이슈사항에 대해 작성 부탁드립니다.(삭제하고 작성해주세요)
+    validations:
+      required: true

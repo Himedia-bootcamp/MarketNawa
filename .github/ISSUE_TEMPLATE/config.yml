@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Market Nawa Issue
+    url: https://github.com/Himedia-bootcamp/MarketNawa.BE/issues/new?template=marketnawa_be_issue_template.yml
+    about: 'Suggest an idea for this project'
