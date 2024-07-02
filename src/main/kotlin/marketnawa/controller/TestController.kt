@@ -1,5 +1,7 @@
 package marketnawa.elasitcsearch
 
+import marketnawa.crawling.category.danawa.getFoodCategoryDetails
+import marketnawa.crawling.product.gmarket.GmarketCrawler
 import marketnawa.domain.Category
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.web.bind.annotation.*
@@ -33,9 +35,14 @@ class TestController(private val elasticsearchOperations: ElasticsearchOperation
 //        return savedEntity.categoryId.toString();
     }
 
-    @GetMapping("/category/{id}")
-    fun findById(@PathVariable("id") id: String): Category? {
-        val category: Category? = elasticsearchOperations.get(id, Category::class.java)
-        return category
+    @GetMapping("/category/crwal")
+    fun findById() {
+        // GmarketCrawling 실행
+//        val gmarketCrawler = GmarketCrawler(elasticsearchOperations)
+//        gmarketCrawler.execute()
+
+        // Category 크롤링 실행
+//        val categories = getFoodCategoryDetails()
+//        elasticsearchOperations.save(categories)
     }
 }

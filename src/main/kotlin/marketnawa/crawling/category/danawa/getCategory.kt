@@ -1,5 +1,6 @@
 package marketnawa.crawling.category.danawa
 
+import marketnawa.domain.Category
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
@@ -15,19 +16,18 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 import org.elasticsearch.client.RestHighLevelClient
 import marketnawa.util.IndexingUtil
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations
+import java.util.*
 
-data class Category(
-    val categoryLarge: String,
-    val categoryMedium: String,
-    val categorySmall: String,
-    val description: String,
-    val searchText: String
-)
+//data class Category(
+//    val categoryLarge: String,
+//    val categoryMedium: String,
+//    val categorySmall: String,
+//    val description: String,
+//    val searchText: String
+//)
 
-fun getFoodCategoryDetails(
-    restHighLevelClient: RestHighLevelClient,
-    indexingUtil: IndexingUtil
-): List<Category> {
+fun getFoodCategoryDetails(): List<Category> {
     val options = ChromeOptions()
     options.addArguments("--headless")
     options.addArguments("--disable-gpu")
@@ -100,37 +100,39 @@ fun getFoodCategoryDetails(
                                     val description = cleanedSubDetailText
                                     val searchText = if (description.isNotEmpty()) description else if (subCategoryText.isNotEmpty()) subCategoryText else middleCategory
                                     val cleanedSearchText = searchText.replace("인기메뉴", "").replace("신규메뉴", "").trim()
-                                    val category = Category(
-                                        categoryLarge = foodMainCategory,
-                                        categoryMedium = middleCategory,
-                                        categorySmall = subCategoryText,
-                                        description = description,
-                                        searchText = cleanedSearchText
+                                    val category: Category = Category(
+                                        UUID.randomUUID().toString(),
+                                        foodMainCategory,
+                                        middleCategory,
+                                        subCategoryText,
+                                        description,
+                                        cleanedSearchText
                                     )
-                                    indexingUtil.indexInsert(
-                                        "market_nawa",
-                                        category.hashCode().toString(),
-                                        category
-                                    )
+//                                    indexingUtil.indexInsert(
+//                                        "market_nawa",
+//                                        category.hashCode().toString(),
+//                                        category
+//                                    )
                                     foodCategories.add(category)
                                 }
                             } else {
                                 val description = ""
                                 val searchText = if (description.isNotEmpty()) description else if (subCategoryText.isNotEmpty()) subCategoryText else middleCategory
                                 val cleanedSearchText = searchText.replace("인기메뉴", "").replace("신규메뉴", "").trim()
-                                val category = Category(
-                                    categoryLarge = foodMainCategory,
-                                    categoryMedium = middleCategory,
-                                    categorySmall = subCategoryText,
-                                    description = description,
-                                    searchText = cleanedSearchText
+                                val category: Category = Category(
+                                    UUID.randomUUID().toString(),
+                                    foodMainCategory,
+                                    middleCategory,
+                                    subCategoryText,
+                                    description,
+                                    cleanedSearchText
                                 )
 
-                                indexingUtil.indexInsert(
-                                    "market_nawa",
-                                    category.hashCode().toString(),
-                                    category
-                                )
+//                                indexingUtil.indexInsert(
+//                                    "market_nawa",
+//                                    category.hashCode().toString(),
+//                                    category
+//                                )
                                 foodCategories.add(category)
                             }
                         }

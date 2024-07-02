@@ -1,11 +1,21 @@
 package marketnawa.crawling.product.gmarket
 
-import com.google.gson.Gson
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery
+import co.elastic.clients.elasticsearch._types.query_dsl.Query
+import marketnawa.domain.Category
+import marketnawa.domain.MarketFood
 import org.openqa.selenium.By
+import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
-import org.openqa.selenium.NoSuchElementException
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.elasticsearch.client.elc.NativeQuery
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations
+import org.springframework.data.elasticsearch.core.SearchHitsIterator
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
+import java.util.*
+
 
 data class Item(
     val itemName: String,
@@ -20,10 +30,12 @@ fun extractPrice(text: String): String {
     return regex.replace(text, "")
 }
 
-class GmarketCrawler {
+class GmarketCrawler(
+    val category: Category,
+    private val elasticsearchOperations: ElasticsearchOperations
+) {
 
     fun execute() {
-        val searchValueList: List<String> = listOf("커피믹스")
 
         val url = "https://www.gmarket.co.kr"
 
@@ -36,54 +48,71 @@ class GmarketCrawler {
         val driver: WebDriver = ChromeDriver(options)
 
         try {
-            for (searchValue in searchValueList) {
-                println(searchValue)
+            val searchText = category.searchText
+            println(searchText.toString())
 
-                val itemList: MutableList<Item> = mutableListOf()
+            val itemList: MutableList<MarketFood> = mutableListOf()
 
-                for (j in 1..10) {
-                    val searchUrl = "/n/search?keyword=$searchValue&k=53&p=$j"
-                    driver.get(url + searchUrl)
+            for (j in 1..10) {
+                val searchUrl = "/n/search?keyword=$searchText&k=53&p=$j"
+                driver.get(url + searchUrl)
 
-                    val products = try {
-                        driver.findElements(By.cssSelector(".box__item-container"))
-                    } catch (e: NoSuchElementException) {
-                        break
-                    }
-
-                    if (products.isEmpty()) {
-                        break
-                    }
-
-                    for (product in products) {
-                        try {
-                            val itemNameElement = product.findElement(By.cssSelector(".text__item-title"))
-                            val itemPriceElement = product.findElement(By.cssSelector(".text__value"))
-                            val itemImgElement = product.findElement(By.cssSelector("img"))
-                            val itemLinkElement = product.findElement(By.cssSelector(".link__item"))
-
-                            val itemName = itemNameElement?.text?.replace("\n", "") ?: "Unknown"
-                            val itemPriceText = extractPrice(itemPriceElement?.text ?: "0")
-                            val itemPrice = if (itemPriceText.isNotEmpty()) itemPriceText.toInt() else 0
-                            val itemImg = itemImgElement?.getAttribute("src") ?: ""
-                            val itemId = product.getAttribute("data-montelena-goodscode") ?: ""
-                            val itemLink = itemLinkElement?.getAttribute("href") ?: ""
-
-                            if (itemName.isNotEmpty() && itemPriceText.isNotEmpty()) {
-                                val item = Item(itemName, itemPrice, itemImg, itemId, itemLink)
-                                itemList.add(item)
-
-                                println(item)
-                            }
-                        } catch (e: NoSuchElementException) {
-                            e.printStackTrace()
-                        }
-                    }
-                    driver.manage().deleteAllCookies()
+                val products = try {
+                    driver.findElements(By.cssSelector(".box__item-container"))
+                } catch (e: NoSuchElementException) {
+                    break
                 }
-                val gson = Gson()
-                val json = gson.toJson(itemList)
-                println(json)
+
+                if (products.isEmpty()) {
+                    break
+                }
+
+                for (product in products) {
+                    try {
+                        val itemNameElement = product.findElement(By.cssSelector(".text__item-title"))
+                        val itemPriceElement = product.findElement(By.cssSelector(".text__value"))
+                        val itemImgElement = product.findElement(By.cssSelector("img"))
+                        val itemLinkElement = product.findElement(By.cssSelector(".link__item"))
+
+                        val itemName = itemNameElement?.text?.replace("\n", "") ?: "Unknown"
+                        val itemPriceText = extractPrice(itemPriceElement?.text ?: "0")
+                        val itemPrice = if (itemPriceText.isNotEmpty()) itemPriceText.toInt() else 0
+                        val itemImg = itemImgElement?.getAttribute("src") ?: ""
+                        val itemId = product.getAttribute("data-montelena-goodscode") ?: ""
+                        val itemLink = itemLinkElement?.getAttribute("href") ?: ""
+
+                        if (itemName.isNotEmpty() && itemPriceText.isNotEmpty()) {
+
+                            var marketFood: MarketFood? = MarketFood(
+                                foodMarketBrand = "G마켓",
+                                foodId = UUID.randomUUID().toString(),
+                                foodDescription = "",
+                                foodPrice = itemPrice,
+                                foodInfo = itemId,
+                                foodName = itemName,
+//                                    foodInfoCreatedDate = "",
+                                representativeName = itemLink,
+                                detailCategory = itemImg,
+                                secondCategory = category.secondCategory,
+                                lastCategory = category.lastCategory,
+                                firstCategory = category.firstCategory
+                            )
+
+                            if (marketFood != null) {
+                                elasticsearchOperations.save(marketFood)
+                            }
+//                                val item = Item(itemName, itemPrice, itemImg, itemId, itemLink)
+                            if (marketFood != null) {
+                                itemList.add(marketFood)
+                            }
+
+//                                println(item)
+                        }
+                    } catch (e: NoSuchElementException) {
+                        e.printStackTrace()
+                    }
+                }
+                driver.manage().deleteAllCookies()
             }
         } catch (e: Exception) {
             e.printStackTrace()
