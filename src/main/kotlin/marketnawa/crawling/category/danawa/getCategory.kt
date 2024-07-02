@@ -1,4 +1,4 @@
-package marketnawa.danawa.categoryCrawling
+package marketnawa.crawling.category.danawa
 
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
@@ -13,7 +13,6 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.time.Duration
 import java.util.concurrent.TimeUnit
-import com.google.gson.Gson
 import org.elasticsearch.client.RestHighLevelClient
 import marketnawa.util.IndexingUtil
 

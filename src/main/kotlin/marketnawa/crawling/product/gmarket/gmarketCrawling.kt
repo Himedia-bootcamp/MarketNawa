@@ -1,4 +1,4 @@
-package marketnawa.gmarketCrawling
+package marketnawa.crawling.product.gmarket
 
 import com.google.gson.Gson
 import org.openqa.selenium.By

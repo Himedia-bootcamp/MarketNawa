@@ -1,12 +1,11 @@
 package marketnawa
 
-import marketnawa.gmarketCrawling.GmarketCrawler
-import marketnawa.danawa.categoryCrawling.getFoodCategoryDetails
+import marketnawa.crawling.product.gmarket.GmarketCrawler
+import marketnawa.crawling.category.danawa.getFoodCategoryDetails
 import marketnawa.util.IndexingUtil
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
-import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.RestClient
