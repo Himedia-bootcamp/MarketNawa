@@ -1,13 +1,21 @@
 <!-- src/components/ProductList.vue -->
 <template>
     <div class="product-list">
+      <div class="sort-dropdown">
+        <label for="sortOrder">정렬: </label>
+        <select id="sortOrder" v-model="selectedSortOrder" @change="onSortOrderChange">
+          <option value="accuracy">정확도순</option>
+          <option value="lowToHigh">낮은 가격순</option>
+          <option value="highToLow">높은 가격순</option>
+        </select>
+      </div>
       <div class="brand-sections">
         <div v-for="brand in brands" :key="brand" class="brand-section">
           <div class="brand-header">
             <img :src="getBrandLogo(brand)" alt="Brand Logo" class="brand-logo">
           </div>
           <div class="products">
-            <div v-for="product in filteredProductsByBrand(brand)" :key="product.food_name" class="product-item">
+            <div v-for="product in sortedProductsByBrand(brand)" :key="product.food_name" class="product-item">
               <img :src="product.food_image_url" alt="Product Image" class="product-image">
               <div class="product-info">
                 <h3>{{ product.food_name }}</h3>
@@ -30,17 +38,36 @@
       products: {
         type: Array,
         required: true
+      },
+      sortOrder: {
+        type: String,
+        required: true
       }
+    },
+    data() {
+      return {
+        selectedSortOrder: this.sortOrder
+      };
     },
     computed: {
       brands() {
         return [...new Set(this.products.map(product => product.food_marketbrand))];
+      },
+      sortedProductsByBrand() {
+        return (brand) => {
+          let products = this.products.filter(product => product.food_marketbrand === brand);
+          if (this.selectedSortOrder === 'lowToHigh') {
+            products.sort((a, b) => a.food_price - b.food_price);
+          } else if (this.selectedSortOrder === 'highToLow') {
+            products.sort((a, b) => b.food_price - a.food_price);
+          } else if (this.selectedSortOrder === 'accuracy') {
+            products = this.products.filter(product => product.food_marketbrand === brand);
+          }
+          return products;
+        };
       }
     },
     methods: {
-      filteredProductsByBrand(brand) {
-        return this.products.filter(product => product.food_marketbrand === brand);
-      },
       formatPrice(price) {
         return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(price);
       },
@@ -55,6 +82,14 @@
           default:
             return '';
         }
+      },
+      onSortOrderChange() {
+        this.$emit('update:sortOrder', this.selectedSortOrder);
+      }
+    },
+    watch: {
+      sortOrder(newVal) {
+        this.selectedSortOrder = newVal;
       }
     }
   };
@@ -63,6 +98,23 @@
   <style scoped>
   .product-list {
     margin-top: 20px;
+  }
+  
+  .sort-dropdown {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  .sort-dropdown label {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  
+  .sort-dropdown select {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
   }
   
   .brand-sections {
