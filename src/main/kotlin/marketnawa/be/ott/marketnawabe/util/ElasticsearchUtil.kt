@@ -73,11 +73,11 @@ class ElasticsearchUtil @Autowired constructor(
         return responseMap?.get("count") as Int
     }
 
-    fun search(indexName: String, keyword: String?, detailCategory: String?, order: String?, from: Int = 0, size: Int = 10): List<Map<String, Any>> {
+    fun search(indexName: String, keyword: String?, market: String?, order: String?, from: Int = 0, size: Int = 10): List<Map<String, Any>> {
         val uri = URI.create("${elasticsearchProperties.host}:${elasticsearchProperties.port}/$indexName/_search")
 
         // 쿼리 JSON 생성
-        val query = buildQuery(keyword, detailCategory, order, from, size)
+        val query = buildQuery(keyword, market, order, from, size)
         println(query)
         // HTTP 요청 실행
         val jsonResponse = executeHttpRequest("POST", uri, query)
@@ -135,7 +135,7 @@ class ElasticsearchUtil @Autowired constructor(
         return objectMapper.writeValueAsString(obj)
     }
 
-    private fun buildQuery(keyword: String?, detailCategory: String?, order: String?, from: Int, size: Int): String {
+    private fun buildQuery(keyword: String?, market: String?, order: String?, from: Int, size: Int): String {
         val matchQuery = if (!keyword.isNullOrBlank()) {
             """
         
@@ -178,7 +178,7 @@ class ElasticsearchUtil @Autowired constructor(
             ""
         }
 
-        val boolQuery = if (!detailCategory.isNullOrBlank()) {
+        val boolQuery = if (!market.isNullOrBlank()) {
             """
         "bool": {
             "must": [
@@ -187,7 +187,7 @@ class ElasticsearchUtil @Autowired constructor(
               },
                 {
                     "match": {
-                        "detailCategory": "$detailCategory"
+                        "foodMarketBrand": "$market"
                     }
                 }
             ]

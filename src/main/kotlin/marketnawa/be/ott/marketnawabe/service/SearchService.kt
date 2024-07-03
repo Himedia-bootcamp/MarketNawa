@@ -10,30 +10,54 @@ import org.springframework.stereotype.Service
 
 @Service
 class SearchService(
-    private val elasticsearchUtil: ElasticsearchUtil
+    private val elasticsearchUtil: ElasticsearchUtil,
+    private val modelMapper: ModelMapper
 ) {
 
     val index: String = "market_food"
 
-    fun searchByFoodName(indexName: String, keyword: String?, detailCategory: String?, order: String?, from: Int = 0, size: Int = 10): Any {
+    fun searchByFoodName(indexName: String, keyword: String?, order: String?, from: Int = 0, size: Int = 10): Map<String, MutableList<MarketFoodDTO>> {
 
-        /**
-         *
-         *  "foodMarketBrand": "G마켓",
-         *  "data": [
-         *          *           "foodName" : "튼튼닷컴상품명오메가3 ADE (6개월분)",
-         *          *           "foodPrice" : 28800,
-         *          *           "foodInfoCreatedDate" : null,
-         *          *           "foodInfo" : "",
-         *          *           "firstCategory" : "식품",
-         *          *           "secondCategory" : "건강식품/홍삼",
-         *          *           "lastCategory" : "영양제",
-         *          *           "detailCategory" : "https://image.gmarket.co.kr/hanbando/202407/40d424f7-6269-490c-9f07-cc55d1292ec6.png?date=20240703",
-         *          *           "foodDescription" : "",
-         *          *           "representativeName" : "http://item.gmarket.co.kr/Item?goodscode=540186964",]
-         */
-        var dataList: List<Map<String, Any>> = emptyList()
-        dataList = elasticsearchUtil.search(indexName, keyword, detailCategory, order, from, size)
-        return dataList
+        var ssgDTOList: MutableList<MarketFoodDTO> = mutableListOf()
+        var coupangDTOList: MutableList<MarketFoodDTO> = mutableListOf()
+        var gMarketDTOList: MutableList<MarketFoodDTO> = mutableListOf()
+
+        fun searchAndAddToDTOList(market: String, dtoList: MutableList<MarketFoodDTO>) {
+            try {
+                val searchList = elasticsearchUtil.search(indexName, keyword, market, order, from, size)
+                searchList.forEach { hits ->
+                    val source = hits["_source"] as? Map<String, Any>
+                    val marketFood = MarketFoodDTO(
+                        source?.get("foodId")?.toString() ?: "",
+                        source?.get("foodRealId")?.toString() ?: "",
+                        source?.get("foodName")?.toString() ?: "",
+                        source?.get("foodPrice")?.toString()?.toIntOrNull() ?: 0,
+                        null,
+                        source?.get("foodInfo")?.toString() ?: "",
+                        source?.get("foodLink")?.toString() ?: "",
+                        source?.get("firstCategory")?.toString() ?: "",
+                        source?.get("secondCategory")?.toString() ?: "",
+                        source?.get("lastCategory")?.toString() ?: "",
+                        source?.get("detailCategory")?.toString() ?: "",
+                        source?.get("foodDescription")?.toString() ?: "",
+                        source?.get("representativeName")?.toString() ?: "",
+                        source?.get("foodMarketBrand")?.toString() ?: "",
+                        source?.get("foodImg")?.toString() ?: ""
+                    )
+                    dtoList.add(marketFood)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        searchAndAddToDTOList("SSG", ssgDTOList)
+        searchAndAddToDTOList("Gmarket", gMarketDTOList)
+        searchAndAddToDTOList("coupang", coupangDTOList)
+
+        return mapOf(
+            "SSG" to ssgDTOList,
+            "Gmarket" to gMarketDTOList,
+            "coupang" to coupangDTOList
+        )
     }
 }
