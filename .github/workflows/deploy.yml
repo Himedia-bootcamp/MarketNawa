@@ -90,6 +90,12 @@ jobs:
           use_existing_version_if_available: true
         continue-on-error: true
 
+      - name: Fetch Logs from Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk request-environment-info --environment-name MarketNawa-env --info-type tail
+          sleep 30
+          aws elasticbeanstalk retrieve-environment-info --environment-name MarketNawa-env --info-type tail
+
       - name: Check Deployment Status
         run: |
           if [ "$?" != "0" ]; then
