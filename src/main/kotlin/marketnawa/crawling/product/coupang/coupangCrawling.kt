@@ -77,9 +77,6 @@ class CoupCrawler(
                         representativeName = "",
                         foodMarketBrand = "coupang"
                     )
-
-                    //gmarket, ssg
-
                     if (marketFood != null) {
                         elasticsearchOperations.save(marketFood)
                     }
