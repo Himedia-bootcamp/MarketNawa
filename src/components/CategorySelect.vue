@@ -4,7 +4,7 @@
       <div class="dropdown-container">
         <label for="secondCategory">분류:</label>
         <select v-model="selectedSecondCategory" @change="onSecondCategoryChange">
-          <option value="">전체</option>
+          <option value="">Select...</option>
           <option v-for="category in secondCategories" :key="category" :value="category">{{ category }}</option>
         </select>
       </div>
