@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery
 import co.elastic.clients.elasticsearch._types.query_dsl.Query
 import marketnawa.domain.Category
 import marketnawa.domain.MarketFood
+import marketnawa.elasitcsearch.EsSearchService
 import org.openqa.selenium.By
 import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.WebDriver
@@ -32,7 +33,8 @@ fun extractPrice(text: String): String {
 
 class GmarketCrawler(
     val category: Category,
-    private val elasticsearchOperations: ElasticsearchOperations
+//    private val elasticsearchOperations: ElasticsearchOperations
+    private val esSearch: EsSearchService
 ) {
 
     fun execute() {
@@ -99,7 +101,8 @@ class GmarketCrawler(
                             )
 
                             if (marketFood != null) {
-                                elasticsearchOperations.save(marketFood)
+//                                elasticsearchOperations.save(marketFood)
+                                esSearch.indexDocument("market_food", marketFood)
                             }
 //                                val item = Item(itemName, itemPrice, itemImg, itemId, itemLink)
                             if (marketFood != null) {

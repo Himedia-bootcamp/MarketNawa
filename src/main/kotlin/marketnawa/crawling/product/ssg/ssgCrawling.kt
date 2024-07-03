@@ -2,6 +2,7 @@ package marketnawa.crawling.product.ssg
 
 import marketnawa.domain.Category
 import marketnawa.domain.MarketFood
+import marketnawa.elasitcsearch.EsSearchService
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.firefox.FirefoxDriver
@@ -18,7 +19,8 @@ fun extractPrice(text: String): String {
 
 class SsgCrawler(
     val category: Category,
-    private val elasticsearchOperations: ElasticsearchOperations
+//    private val elasticsearchOperations: ElasticsearchOperations
+    private val esSearchService: EsSearchService
 ) {
     fun execute() {
         //크롤링할 웹사이트 주소
@@ -26,8 +28,8 @@ class SsgCrawler(
 
         //웹 드라이버 설정
         //현재 파이어폭스로 설정되어 있음, 크롬사용시 변경필요
-        val webDriverID = "webdriver.gecko.driver"
-        val webDriverPath = "/Users/seung/Downloads/geckodriver"
+        val webDriverID = "webdriver.chrome.driver"
+        val webDriverPath = "C:/drivers/chromedriver.exe" // 실제 크롬 드라이버 경로로 변경
         System.setProperty(webDriverID, webDriverPath)
 
         val options = FirefoxOptions()
@@ -79,7 +81,8 @@ class SsgCrawler(
                         firstCategory = category.firstCategory
                     )
                     if (marketFood != null) {
-                        elasticsearchOperations.save(marketFood)
+//                        elasticsearchOperations.save(marketFood)
+                        esSearchService.indexDocument("market_food", marketFood)
                     }
                 }
                 driver.manage().deleteAllCookies()
