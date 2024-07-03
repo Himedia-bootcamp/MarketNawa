@@ -73,7 +73,8 @@ class CoupCrawler(
                         firstCategory = category.firstCategory,
                         secondCategory = category.secondCategory,
                         lastCategory = category.lastCategory,
-                        representativeName = category.desscription,
+                        detailCategory = category.desscription,
+                        representativeName = "",
                         foodMarketBrand = "coupang"
                     )
 

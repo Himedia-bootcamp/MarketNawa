@@ -79,7 +79,8 @@ class SsgCrawler(
                         firstCategory = category.firstCategory,
                         secondCategory = category.secondCategory,
                         lastCategory = category.lastCategory,
-                        representativeName = category.desscription,
+                        detailCategory = category.desscription,
+                        representativeName = "",
                         foodMarketBrand = "SSG"
                     )
                     if (marketFood != null) {
