@@ -33,7 +33,7 @@ export default {
       selectedCategory: {},
       currentPage: 1,
       itemsPerPage: 20,
-      sortOrder: 'lowToHigh', // 초기 정렬 순서
+      sortOrder: 'accuracy', // 초기 정렬 순서
       allProducts: [
         // 예시 데이터
         { food_name: 'G마켓 상품 1', food_price: 10000, food_marketbrand: 'G마켓', food_image_url: 'https://via.placeholder.com/100' },
