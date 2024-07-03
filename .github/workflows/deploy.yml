@@ -69,38 +69,12 @@ jobs:
           cat <<EOF > Procfile
           web: node server.js
           EOF
-          mkdir -p .platform/nginx/conf.d
-          cat <<EOF > .platform/nginx/conf.d/proxy.conf
-          server {
-            listen 80;
-            server_name _;
-            location / {
-              proxy_pass http://127.0.0.1:8080;
-              proxy_http_version 1.1;
-              proxy_set_header Upgrade \$http_upgrade;
-              proxy_set_header Connection 'upgrade';
-              proxy_set_header Host \$host;
-              proxy_cache_bypass \$http_upgrade;
-            }
-          }
-          EOF
-          cat <<EOF > .platform/nginx/conf.d/health.conf
-          server {
-            listen 80;
-            server_name _;
-            location /health {
-              return 200 'Health Check OK';
-              add_header Content-Type text/plain;
-            }
-          }
-          EOF
           mkdir -p deploy
           cp -r dist deploy/
           cp package.json deploy/
           cp server.js deploy/
           cp Procfile deploy/
           cp -r .ebextensions deploy/
-          cp -r .platform deploy/
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
@@ -113,4 +87,3 @@ jobs:
           version_label: github-action-${{ github.sha }}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
-          use_existing_version_if_available: true
