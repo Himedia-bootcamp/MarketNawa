@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    retries: 3 # 배포를 자동으로 재시도할 횟수
 
     steps:
       - name: Checkout repository
