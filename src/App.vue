@@ -5,7 +5,8 @@
     <div class="content">
       <CategorySelect @category-selected="onCategorySelected" />
       <SearchBar @search="performSearch" />
-      <ProductList :products="paginatedProducts" />
+      
+      <ProductList :products="filteredProducts" :sortOrder="sortOrder" />
       <Pagination :totalItems="filteredProducts.length" :itemsPerPage="itemsPerPage" @page-changed="onPageChanged" />
     </div>
   </div>
@@ -32,6 +33,7 @@ export default {
       selectedCategory: {},
       currentPage: 1,
       itemsPerPage: 20,
+      sortOrder: 'lowToHigh', // 초기 정렬 순서
       allProducts: [
         // 예시 데이터
         { food_name: 'G마켓 상품 1', food_price: 10000, food_marketbrand: 'G마켓', food_image_url: 'https://via.placeholder.com/100' },
@@ -54,11 +56,6 @@ export default {
           (!description || product.food_description === description)
         );
       });
-    },
-    paginatedProducts() {
-      const start = (this.currentPage - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
-      return this.filteredProducts.slice(start, end);
     }
   },
   methods: {
@@ -75,6 +72,9 @@ export default {
     },
     onPageChanged(page) {
       this.currentPage = page;
+    },
+    setSortOrder(order) {
+      this.sortOrder = order;
     }
   }
 };
@@ -91,5 +91,27 @@ export default {
 
 .content {
   padding-top: 70px; /* 헤더의 높이 만큼 패딩 추가 */
+}
+
+.sort-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.sort-buttons button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.sort-buttons button:hover {
+  background-color: #0056b3;
 }
 </style>
