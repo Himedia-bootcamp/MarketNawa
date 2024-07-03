@@ -10,19 +10,19 @@ import org.springframework.stereotype.Component
 
 @Component
 class IndexingUtil(
-    private val restHighLevelClient: RestHighLevelClient
+//    private val restHighLevelClient: RestHighLevelClient
 ) {
 
-    fun indexInsert(index: String, indexId: String, domainData: Any): IndexResponse? {
-        val indexRequest = IndexRequest(index)
-            .id(indexId)
-            .source(ObjectMapper().writeValueAsString(domainData), XContentType.JSON)
-
-        val indexResponse = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT)
-//        println("response id: ${indexResponse.id}")
-//        println("response name: ${indexResponse.result.name}")
-        return indexResponse
-    }
+//    fun indexInsert(index: String, indexId: String, domainData: Any): IndexResponse? {
+//        val indexRequest = IndexRequest(index)
+//            .id(indexId)
+//            .source(ObjectMapper().writeValueAsString(domainData), XContentType.JSON)
+//
+//        val indexResponse = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT)
+////        println("response id: ${indexResponse.id}")
+////        println("response name: ${indexResponse.result.name}")
+//        return indexResponse
+//    }
 
     fun convertIndexRequest(index: String, indexId: String, domainData: Any): IndexRequest {
         return IndexRequest(index)

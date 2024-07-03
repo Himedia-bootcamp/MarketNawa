@@ -4,6 +4,8 @@ import com.google.gson.Gson
 import marketnawa.domain.Category
 import marketnawa.domain.Item
 import marketnawa.domain.MarketFood
+import marketnawa.elasitcsearch.EsSearchService
+import marketnawa.util.ElasticsearchUtil
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.firefox.FirefoxDriver
@@ -18,14 +20,15 @@ fun extractPrice(text: String): String {
 
 class CoupCrawler(
     val category: Category,
-    private val elasticsearchOperations: ElasticsearchOperations
+//    private val elasticsearchOperations: ElasticsearchOperations
+    private val esSearch: EsSearchService
 ) {
     fun execute() {
 
         val url = "https://www.coupang.com"
 
-        val webDriverID = "webdriver.gecko.driver"
-        val webDriverPath = "/Users/seung/Downloads/geckodriver"
+        val webDriverID = "webdriver.chrome.driver"
+        val webDriverPath = "C:/drivers/chromedriver.exe" // 실제 크롬 드라이버 경로로 변경
         System.setProperty(webDriverID, webDriverPath)
 
         val options = FirefoxOptions()
@@ -77,7 +80,8 @@ class CoupCrawler(
                     )
 
                     if (marketFood != null) {
-                        elasticsearchOperations.save(marketFood)
+//                        elasticsearchOperations.save(marketFood)
+                        esSearch.indexDocument("market_food", marketFood)
                     }
                 }
                 driver.manage().deleteAllCookies()

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.ArrayList
 
-@RestController
+//@RestController
 class HealthCheckController(
     private val restHighLevelClient: RestHighLevelClient,
     private val indexingUtil: IndexingUtil
@@ -45,21 +45,21 @@ class HealthCheckController(
         return responseMap;
     }
 
-    @GetMapping("/insert")
-    fun test2(): IndexResponse? {
-        val category = Category(
-            "sdfsdfd",
-            "larddge",
-            "mddedi",
-            "smaddll",
-            "des",
-            "searddddddddddch"
-        )
-
-        return indexingUtil.indexInsert(
-            "market_nawa",
-            category.categoryId!!,
-            category
-        )
-    }
+//    @GetMapping("/insert")
+//    fun test2(): IndexResponse? {
+//        val category = Category(
+//            "sdfsdfd",
+//            "larddge",
+//            "mddedi",
+//            "smaddll",
+//            "des",
+//            "searddddddddddch"
+//        )
+//
+//        return indexingUtil.indexInsert(
+//            "market_nawa",
+//            category.categoryId!!,
+//            category
+//        )
+//    }
 }
