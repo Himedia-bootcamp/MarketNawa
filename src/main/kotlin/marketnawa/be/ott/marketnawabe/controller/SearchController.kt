@@ -33,13 +33,4 @@ class SearchController (
 
         return ResponseEntity.ok().body(ResponseDTO(HttpStatus.OK, "조회", brandResults))
     }
-
-    @GetMapping("/category")
-    fun getCategory() : ResponseEntity<ResponseDTO>{
-        val result = searchService.getCategory()
-        return  ResponseEntity.ok().body(ResponseDTO(HttpStatus.OK, "조회완료", result))
-
-    }
-
-
 }
