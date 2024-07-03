@@ -8,7 +8,6 @@ plugins {
 }
 
 application {
-    // 메인 클래스의 경로를 정확히 지정합니다.
     mainClass.set("marketnawa.ApplicationKt")
 }
 
@@ -47,4 +46,11 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.bootJar {
+    enabled = false
+}
+tasks.jar {
+    enabled = true
 }
