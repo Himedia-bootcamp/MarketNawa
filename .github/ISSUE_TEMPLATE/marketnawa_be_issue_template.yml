@@ -1,0 +1,35 @@
+name: 'Market Nawa_BE Issue Template'
+description: 'Market Nawa Backend 레포지토리에 이슈를 생성합니다.'
+title: '이슈 이름을 작성해주세요'
+labels: []
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        <h1 style="justify-content: center; display: flex">🥕 Market Nawa - BE 🥕️</h1>
+        <h3> 🌈 Function Implementation </h3>
+  - type: textarea
+    id: function_implementation
+    attributes:
+      label: '기능 구현'
+      description: '여기에 목록 형식으로 개발하거나 이슈사항에 대해 작성해주세요'
+      value: |
+        - 여기에 목록 형식으로 개발하거나(삭제하고 작성해주세요)
+        - 이슈사항에 대해 작성 부탁드립니다.(삭제하고 작성해주세요)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: be_development
+    attributes:
+      label: 'BE 개발'
+      description: '개발할 항목을 선택해주세요'
+      options:
+        - label: '생성 create'
+        - label: '조회 read'
+        - label: '수정 update'
+        - label: '삭제 delete'
+        - label: '기타 etc'
+        - label: 'CI&CD 구축'
