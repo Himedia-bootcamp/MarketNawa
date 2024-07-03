@@ -37,6 +37,13 @@ dependencies {
 	// Mysql
 //	runtimeOnly("com.mysql:mysql-connector-j")
 
+	// es
+	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+	implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.13.4")
+
+	// modelMapper
+	implementation("org.modelmapper:modelmapper:3.1.1")
+
 	// Testing
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
