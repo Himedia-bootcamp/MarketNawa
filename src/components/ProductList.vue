@@ -1,26 +1,31 @@
 <template>
     <div class="product-list">
-      <div class="sort-dropdown">
-        <label for="sortOrder">정렬: </label>
-        <select id="sortOrder" v-model="selectedSortOrder" @change="onSortOrderChange">
-          <option value="accuracy">정확도순</option>
-          <option value="lowToHigh">낮은 가격순</option>
-          <option value="highToLow">높은 가격순</option>
-        </select>
+      <div v-if="isCategoryDefault" class="no-category">
+        <img :src="logo" alt="Marketnawa Logo" class="marketnawa-logo">
       </div>
-      <div class="brand-sections">
-        <div v-for="brand in allBrands" :key="brand" class="brand-section">
-          <div class="brand-header">
-            <img :src="getBrandLogo(brand)" alt="Brand Logo" class="brand-logo">
-          </div>
-          <div class="products">
-            <div v-if="filteredProductsByBrand(brand).length === 0" class="no-products">조회되는 상품이 없습니다.</div>
-            <div v-else>
-              <div v-for="product in sortedProductsByBrand(brand)" :key="product.food_name" class="product-item" @click="navigateToProduct(product.representative_name)">
-                <img :src="product.detail_category" alt="Product Image" class="product-image">
-                <div class="product-info">
-                  <h3>{{ product.food_name }}</h3>
-                  <p>{{ formatPrice(product.food_price) }}</p>
+      <div v-else>
+        <div class="sort-dropdown">
+          <label for="sortOrder">정렬: </label>
+          <select id="sortOrder" v-model="selectedSortOrder" @change="onSortOrderChange">
+            <option value="accuracy">정확도순</option>
+            <option value="lowToHigh">낮은 가격순</option>
+            <option value="highToLow">높은 가격순</option>
+          </select>
+        </div>
+        <div class="brand-sections">
+          <div v-for="brand in allBrands" :key="brand" class="brand-section">
+            <div class="brand-header">
+              <img :src="getBrandLogo(brand)" alt="Brand Logo" class="brand-logo">
+            </div>
+            <div class="products">
+              <div v-if="filteredProductsByBrand(brand).length === 0" class="no-products">조회되는 상품이 없습니다.</div>
+              <div v-else>
+                <div v-for="product in sortedProductsByBrand(brand)" :key="product.foodId" class="product-item" @click="navigateToProduct(product.foodLink)">
+                  <img :src="product.foodImg" alt="Product Image" class="product-image">
+                  <div class="product-info">
+                    <h3>{{ product.foodName }}</h3>
+                    <p>{{ formatPrice(product.foodPrice) }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -34,6 +39,7 @@
   import GmarketLogo from '../assets/GmarketLogo-removebg.png';
   import EmartSSGLogo from '../assets/emartSSGLogo-removebg.png';
   import CoupangLogo from '../assets/coupangLogo-removebg.png';
+  import marketnawaLogo from '../assets/test-removebg-preview.png';
   
   export default {
     props: {
@@ -44,25 +50,30 @@
       sortOrder: {
         type: String,
         required: true
+      },
+      selectedCategory: {
+        type: Object,
+        required: true
       }
     },
     data() {
       return {
         selectedSortOrder: this.sortOrder,
-        allBrands: ['Gmarket', 'SSG', 'coupang']
+        allBrands: ['Gmarket', 'SSG', 'coupang'],
+        logo: marketnawaLogo
       };
     },
     computed: {
-      brands() {
-        return [...new Set(this.products.map(product => product.food_marketbrand))];
+      isCategoryDefault() {
+        return this.selectedCategory.description === '선택';
       },
       sortedProductsByBrand() {
         return (brand) => {
           let products = this.filteredProductsByBrand(brand);
           if (this.selectedSortOrder === 'lowToHigh') {
-            products.sort((a, b) => a.food_price - b.food_price);
+            products.sort((a, b) => a.foodPrice - b.foodPrice);
           } else if (this.selectedSortOrder === 'highToLow') {
-            products.sort((a, b) => b.food_price - a.food_price);
+            products.sort((a, b) => b.foodPrice - a.foodPrice);
           }
           return products;
         };
@@ -70,7 +81,15 @@
     },
     methods: {
       filteredProductsByBrand(brand) {
-        return this.products.filter(product => product.food_marketbrand === brand);
+        return this.products.filter(product => product.foodMarketBrand === brand && this.categoryMatches(product));
+      },
+      categoryMatches(product) {
+        const { secondCategory, lastCategory, description } = this.selectedCategory;
+        return (
+          (!secondCategory || product.secondCategory === secondCategory) &&
+          (!lastCategory || product.lastCategory === lastCategory) &&
+          (!description || product.detailCategory === description)
+        );
       },
       formatPrice(price) {
         return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(price);
@@ -105,6 +124,18 @@
   <style scoped>
   .product-list {
     margin-top: 20px;
+  }
+  
+  .no-category {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px; /* Adjust height as needed */
+  }
+  
+  .marketnawa-logo {
+    max-width: 100%;
+    height: auto;
   }
   
   .sort-dropdown {
