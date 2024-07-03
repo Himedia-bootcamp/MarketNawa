@@ -1,16 +1,14 @@
 package marketnawa.crawling.product.coupang
 
-import com.google.gson.Gson
 import marketnawa.domain.Category
-import marketnawa.domain.Item
 import marketnawa.domain.MarketFood
-import marketnawa.elasitcsearch.EsSearchService
-import marketnawa.util.ElasticsearchUtil
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxOptions
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
+import java.util.*
+import kotlin.NoSuchElementException
 
 //문자열에서 숫자 추출
 fun extractPrice(text: String): String {
@@ -20,15 +18,14 @@ fun extractPrice(text: String): String {
 
 class CoupCrawler(
     val category: Category,
-//    private val elasticsearchOperations: ElasticsearchOperations
-    private val esSearch: EsSearchService
+    private val elasticsearchOperations: ElasticsearchOperations
 ) {
     fun execute() {
 
         val url = "https://www.coupang.com"
 
-        val webDriverID = "webdriver.chrome.driver"
-        val webDriverPath = "C:/drivers/chromedriver.exe" // 실제 크롬 드라이버 경로로 변경
+        val webDriverID = "webdriver.gecko.driver"
+        val webDriverPath = "/Users/seung/Downloads/geckodriver"
         System.setProperty(webDriverID, webDriverPath)
 
         val options = FirefoxOptions()
@@ -63,25 +60,27 @@ class CoupCrawler(
                     val itemId = extractPrice(product.getAttribute("id"))
 
                     val itemLink = product.findElement(By.cssSelector("a")).getAttribute("href")
-                    val item = Item(itemName, itemPrice.toInt(), itemImg, itemId, itemLink)
 
                     val marketFood: MarketFood? = MarketFood(
-                        foodMarketBrand = "Coupang",
-                        foodId = itemId,
-                        foodDescription = "",
-                        foodPrice = itemPrice.toInt(),
-                        foodInfo = itemId,
+                        foodId = UUID.randomUUID().toString(),
+                        foodRealId = itemId,
                         foodName = itemName,
-                        representativeName = itemLink,
-                        detailCategory = itemImg,
+                        foodPrice = itemPrice.toInt(),
+//                        foodInfoCreatedDate = "",
+                        foodInfo = "",
+                        foodLink = itemLink,
+                        foodImg = itemImg,
+                        firstCategory = category.firstCategory,
                         secondCategory = category.secondCategory,
                         lastCategory = category.lastCategory,
-                        firstCategory = category.firstCategory
+                        representativeName = category.desscription,
+                        foodMarketBrand = "coupang"
                     )
 
+                    //gmarket, ssg
+
                     if (marketFood != null) {
-//                        elasticsearchOperations.save(marketFood)
-                        esSearch.indexDocument("market_food", marketFood)
+                        elasticsearchOperations.save(marketFood)
                     }
                 }
                 driver.manage().deleteAllCookies()
@@ -93,3 +92,4 @@ class CoupCrawler(
         }
     }
 }
+

@@ -68,17 +68,19 @@ class SsgCrawler(
                     val itemLink = product.findElement(By.cssSelector("a")).getAttribute("href")
 
                     val marketFood: MarketFood? = MarketFood(
-                        foodMarketBrand = "SSG",
-                        foodId = itemId,
-                        foodDescription = "",
-                        foodPrice = itemPrice.toInt(),
-                        foodInfo = itemId,
+                        foodId = UUID.randomUUID().toString(),
+                        foodRealId = itemId,
                         foodName = itemName,
-                        representativeName = itemLink,
-                        detailCategory = itemImg,
+                        foodPrice = itemPrice.toInt(),
+//                        foodInfoCreatedDate = "",
+                        foodInfo = "",
+                        foodLink = itemLink,
+                        foodImg = itemImg,
+                        firstCategory = category.firstCategory,
                         secondCategory = category.secondCategory,
                         lastCategory = category.lastCategory,
-                        firstCategory = category.firstCategory
+                        representativeName = category.desscription,
+                        foodMarketBrand = "SSG"
                     )
                     if (marketFood != null) {
 //                        elasticsearchOperations.save(marketFood)

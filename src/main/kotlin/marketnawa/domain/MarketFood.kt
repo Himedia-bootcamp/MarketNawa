@@ -13,6 +13,9 @@ class MarketFood(
     @Field(name = "food_id", type = FieldType.Keyword)
     var foodId: String? = null,
 
+    @Field(name = "food_real_id", type = FieldType.Keyword)
+    var foodRealId: String? = null,
+
     @Field(name = "food_name", type = FieldType.Text, analyzer = "nori", searchAnalyzer = "nori")
     var foodName: String? = null,
 
@@ -24,6 +27,9 @@ class MarketFood(
 
     @Field(name = "food_info", type = FieldType.Keyword)
     var foodInfo: String? = null,
+
+    @Field(name = "food_link", type = FieldType.Keyword)
+    var foodLink: String? = null,
 
     @Field(name = "first_category", type = FieldType.Keyword)
     var firstCategory: String? = null,
@@ -44,6 +50,9 @@ class MarketFood(
     var representativeName: String? = null,
 
     @Field(name = "food_marketbrand", type = FieldType.Keyword)
-    var foodMarketBrand: String? = null
+    var foodMarketBrand: String? = null,
+
+    @Field(name = "food_img", type = FieldType.Keyword)
+    var foodImg: String? = null
 ) {
 }

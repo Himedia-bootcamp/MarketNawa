@@ -86,18 +86,19 @@ class GmarketCrawler(
                         if (itemName.isNotEmpty() && itemPriceText.isNotEmpty()) {
 
                             var marketFood: MarketFood? = MarketFood(
-                                foodMarketBrand = "G마켓",
                                 foodId = UUID.randomUUID().toString(),
-                                foodDescription = "",
-                                foodPrice = itemPrice,
-                                foodInfo = itemId,
+                                foodRealId = itemId,
                                 foodName = itemName,
-//                                    foodInfoCreatedDate = "",
-                                representativeName = itemLink,
-                                detailCategory = itemImg,
+                                foodPrice = itemPrice,
+//                        foodInfoCreatedDate = "",
+                                foodInfo = "",
+                                foodLink = itemLink,
+                                foodImg = itemImg,
+                                firstCategory = category.firstCategory,
                                 secondCategory = category.secondCategory,
                                 lastCategory = category.lastCategory,
-                                firstCategory = category.firstCategory
+                                representativeName = category.desscription,
+                                foodMarketBrand = "Gmarket"
                             )
 
                             if (marketFood != null) {
