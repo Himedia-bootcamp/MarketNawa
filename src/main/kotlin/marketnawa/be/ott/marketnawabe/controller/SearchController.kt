@@ -3,6 +3,7 @@ package marketnawa.be.ott.marketnawabe.controller
 import marketnawa.be.ott.marketnawabe.common.Criteria
 import marketnawa.be.ott.marketnawabe.common.PagingResponseDTO
 import marketnawa.be.ott.marketnawabe.common.ResponseDTO
+import marketnawa.be.ott.marketnawabe.document.SortingOrder
 import marketnawa.be.ott.marketnawabe.service.SearchService
 import marketnawa.be.ott.marketnawabe.util.IndexingUtil
 import org.apache.http.HttpHost
@@ -24,13 +25,13 @@ class SearchController (
     @GetMapping("/search")
     fun searchByFoodName(
         @RequestParam keyword: String,
-        @RequestParam detail : String,
-        @RequestParam sort : String = "",
-        @RequestParam offset: String = "1",
+        @RequestParam lastCategory: String,
+        @RequestParam order: String,
+        @RequestParam from: Int = 0,
+        @RequestParam size: Int = 10,
     ) : ResponseEntity<ResponseDTO>{
-        val cri = Criteria(offset.toInt(), 80)
-        val brandResults: Map<String, PagingResponseDTO> = searchService.searchByFoodName(keyword, cri, sort, detail)
-
+        val sortingOrder = SortingOrder.fromString(order)
+        val brandResults: Map<String, PagingResponseDTO> = searchService.searchByFoodName(keyword, lastCategory, sortingOrder, from, size)
         return ResponseEntity.ok().body(ResponseDTO(HttpStatus.OK, "조회", brandResults))
     }
 }
