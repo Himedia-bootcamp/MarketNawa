@@ -69,6 +69,7 @@ jobs:
           cat <<EOF > Procfile
           web: node server.js
           EOF
+          mkdir -p .platform/nginx/conf.d
           cat <<EOF > .platform/nginx/conf.d/proxy.conf
           server {
             listen 80;
