@@ -1,12 +1,10 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
     <Header />
     <div class="content">
       <CategorySelect @category-selected="onCategorySelected" />
       <SearchBar @search="performSearch" />
-      
-      <ProductList :products="filteredProducts" :sortOrder="sortOrder" />
+      <ProductList :products="filteredProducts" :sortOrder.sync="sortOrder" />
       <Pagination :totalItems="filteredProducts.length" :itemsPerPage="itemsPerPage" @page-changed="onPageChanged" />
     </div>
   </div>
@@ -18,6 +16,7 @@ import SearchBar from './components/SearchBar.vue';
 import ProductList from './components/ProductList.vue';
 import CategorySelect from './components/CategorySelect.vue';
 import Pagination from './components/Pagination.vue';
+import esTestData from './data/es_test_data.json'; // JSON 파일 임포트
 import './assets/style.css';
 
 export default {
@@ -34,15 +33,7 @@ export default {
       currentPage: 1,
       itemsPerPage: 20,
       sortOrder: 'accuracy', // 초기 정렬 순서
-      allProducts: [
-        // 예시 데이터
-        { food_name: 'G마켓 상품 1', food_price: 10000, food_marketbrand: 'G마켓', food_image_url: 'https://via.placeholder.com/100' },
-        { food_name: 'G마켓 상품 2', food_price: 15000, food_marketbrand: 'G마켓', food_image_url: 'https://via.placeholder.com/100' },
-        { food_name: '이마트SSG 상품 1', food_price: 20000, food_marketbrand: '이마트SSG', food_image_url: 'https://via.placeholder.com/100' },
-        { food_name: '쿠팡 상품 1', food_price: 25000, food_marketbrand: '쿠팡', food_image_url: 'https://via.placeholder.com/100' },
-        { food_name: '쿠팡 상품 2', food_price: 30000, food_marketbrand: '쿠팡', food_image_url: 'https://via.placeholder.com/100' },
-        // 더 많은 데이터 추가
-      ]
+      allProducts: []
     };
   },
   computed: {
@@ -75,7 +66,18 @@ export default {
     },
     setSortOrder(order) {
       this.sortOrder = order;
+    },
+    loadProducts() {
+      const data = esTestData;
+      this.allProducts = [
+        ...data.Gmarket.data.map(item => item._source || item),
+        ...data.SSG.data.map(item => item._source || item),
+        ...data.coupang.data.map(item => item._source || item)
+      ];
     }
+  },
+  mounted() {
+    this.loadProducts();
   }
 };
 </script>

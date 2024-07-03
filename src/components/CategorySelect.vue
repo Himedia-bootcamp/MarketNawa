@@ -4,7 +4,7 @@
       <div class="dropdown-container">
         <label for="secondCategory">분류:</label>
         <select v-model="selectedSecondCategory" @change="onSecondCategoryChange">
-          <option value=""> </option>
+          <option value="">선택</option>
           <option v-for="category in secondCategories" :key="category" :value="category">{{ category }}</option>
         </select>
       </div>
@@ -12,7 +12,7 @@
       <div class="dropdown-container" v-if="selectedSecondCategory">
         <label for="lastCategory">상세:</label>
         <select v-model="selectedLastCategory" @change="onLastCategoryChange">
-          <option value="">Select</option>
+          <option value="">선택</option>
           <option v-for="category in uniqueLastCategories" :key="category" :value="category">{{ category }}</option>
         </select>
       </div>
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-  </template>
+  </template> 
   
   <script>
   import { categories } from '../data/categories.js';

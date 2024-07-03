@@ -29,7 +29,7 @@
               q: JSON.stringify({
                 query: {
                   match: {
-                    foodMarketBrand: 'G마켓'
+                    foodMarketBrand: 'Gmarket'
                   }
                 }
               })

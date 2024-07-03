@@ -1,4 +1,3 @@
-<!-- src/components/ProductList.vue -->
 <template>
     <div class="product-list">
       <div class="sort-dropdown">
@@ -10,16 +9,19 @@
         </select>
       </div>
       <div class="brand-sections">
-        <div v-for="brand in brands" :key="brand" class="brand-section">
+        <div v-for="brand in allBrands" :key="brand" class="brand-section">
           <div class="brand-header">
             <img :src="getBrandLogo(brand)" alt="Brand Logo" class="brand-logo">
           </div>
           <div class="products">
-            <div v-for="product in sortedProductsByBrand(brand)" :key="product.food_name" class="product-item">
-              <img :src="product.food_image_url" alt="Product Image" class="product-image">
-              <div class="product-info">
-                <h3>{{ product.food_name }}</h3>
-                <p>{{ formatPrice(product.food_price) }}</p>
+            <div v-if="filteredProductsByBrand(brand).length === 0" class="no-products">조회되는 상품이 없습니다.</div>
+            <div v-else>
+              <div v-for="product in sortedProductsByBrand(brand)" :key="product.food_name" class="product-item" @click="navigateToProduct(product.representative_name)">
+                <img :src="product.detail_category" alt="Product Image" class="product-image">
+                <div class="product-info">
+                  <h3>{{ product.food_name }}</h3>
+                  <p>{{ formatPrice(product.food_price) }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -46,7 +48,8 @@
     },
     data() {
       return {
-        selectedSortOrder: this.sortOrder
+        selectedSortOrder: this.sortOrder,
+        allBrands: ['Gmarket', 'SSG', 'coupang']
       };
     },
     computed: {
@@ -55,29 +58,30 @@
       },
       sortedProductsByBrand() {
         return (brand) => {
-          let products = this.products.filter(product => product.food_marketbrand === brand);
+          let products = this.filteredProductsByBrand(brand);
           if (this.selectedSortOrder === 'lowToHigh') {
             products.sort((a, b) => a.food_price - b.food_price);
           } else if (this.selectedSortOrder === 'highToLow') {
             products.sort((a, b) => b.food_price - a.food_price);
-          } else if (this.selectedSortOrder === 'accuracy') {
-            products = this.products.filter(product => product.food_marketbrand === brand);
           }
           return products;
         };
       }
     },
     methods: {
+      filteredProductsByBrand(brand) {
+        return this.products.filter(product => product.food_marketbrand === brand);
+      },
       formatPrice(price) {
         return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(price);
       },
       getBrandLogo(brand) {
         switch (brand) {
-          case 'G마켓':
+          case 'Gmarket':
             return GmarketLogo;
-          case '이마트SSG':
+          case 'SSG':
             return EmartSSGLogo;
-          case '쿠팡':
+          case 'coupang':
             return CoupangLogo;
           default:
             return '';
@@ -85,6 +89,9 @@
       },
       onSortOrderChange() {
         this.$emit('update:sortOrder', this.selectedSortOrder);
+      },
+      navigateToProduct(url) {
+        window.open(url, '_blank');
       }
     },
     watch: {
@@ -148,6 +155,7 @@
   }
   
   .product-item {
+    background-color: #ffffff;
     display: flex;
     align-items: center;
     border: 1px solid #ddd;
@@ -185,6 +193,15 @@
     color: #007bff;
     font-size: 1em;
     margin: 0;
+  }
+  
+  .no-products {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #999;
+    border: 1px solid #ddd;
+    border-radius: 8px;
   }
   </style>
   
