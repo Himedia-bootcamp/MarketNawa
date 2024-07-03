@@ -1,12 +1,8 @@
 package marketnawa.be.ott.marketnawabe.service
 
-import marketnawa.be.ott.marketnawabe.common.Criteria
-import marketnawa.be.ott.marketnawabe.common.PageDTO
-import marketnawa.be.ott.marketnawabe.common.PagingResponseDTO
 import marketnawa.be.ott.marketnawabe.document.MarketFood
 import marketnawa.be.ott.marketnawabe.document.SortingOrder
 import marketnawa.be.ott.marketnawabe.dto.MarketFoodDTO
-import marketnawa.be.ott.marketnawabe.repository.FoodRepository
 import marketnawa.be.ott.marketnawabe.util.ElasticsearchUtil
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.*
@@ -19,7 +15,7 @@ class SearchService(
 
     val index: String = "market_food"
 
-    fun searchByFoodName(keyword: String, lastCategory: String, order: SortingOrder, from: Int, size: Int): Any {
+    fun searchByFoodName(indexName: String, keyword: String?, detailCategory: String?, order: String?, from: Int = 0, size: Int = 10): Any {
 
         /**
          *
@@ -37,7 +33,7 @@ class SearchService(
          *          *           "representativeName" : "http://item.gmarket.co.kr/Item?goodscode=540186964",]
          */
         var dataList: List<Map<String, Any>> = emptyList()
-//        dataList = elasticsearchUtil.search()
+        dataList = elasticsearchUtil.search(indexName, keyword, detailCategory, order, from, size)
         return dataList
     }
 }

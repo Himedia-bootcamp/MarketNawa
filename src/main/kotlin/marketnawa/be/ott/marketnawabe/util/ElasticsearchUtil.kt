@@ -73,6 +73,19 @@ class ElasticsearchUtil @Autowired constructor(
         return responseMap?.get("count") as Int
     }
 
+    fun search(indexName: String, keyword: String?, detailCategory: String?, order: String?, from: Int = 0, size: Int = 10): List<Map<String, Any>> {
+        val uri = URI.create("${elasticsearchProperties.host}:${elasticsearchProperties.port}/$indexName/_search")
+
+        // 쿼리 JSON 생성
+        val query = buildQuery(keyword, detailCategory, order, from, size)
+        println(query)
+        // HTTP 요청 실행
+        val jsonResponse = executeHttpRequest("POST", uri, query)
+
+        // JSON 파싱
+        return parseSearchResponse(jsonResponse)
+    }
+
     private fun executeHttpRequest(method: String, uri: URI, requestBody: String? = null): String {
         val url = URL(uri.toString())
         val connection = url.openConnection() as HttpURLConnection
@@ -120,5 +133,79 @@ class ElasticsearchUtil @Autowired constructor(
 
     private fun convertObjectToJson(obj: Any): String {
         return objectMapper.writeValueAsString(obj)
+    }
+
+    private fun buildQuery(keyword: String?, detailCategory: String?, order: String?, from: Int, size: Int): String {
+        val matchQuery = if (!keyword.isNullOrBlank()) {
+            """
+        
+            "match": {
+                "foodName": "$keyword"
+            }
+        
+        """
+        } else {
+            """
+        {
+            "match_all": {}
+        }
+        """
+        }
+
+        val sortField = when (order) {
+            "highest" -> "foodPrice"
+            "lowest" -> "foodPrice"
+            else -> null
+        }
+
+        val sortOrder = when (order) {
+            "highest" -> "desc"
+            "lowest" -> "asc"
+            else -> null
+        }
+
+        val sortQuery = if (sortField != null && sortOrder != null) {
+            """
+        ,"sort": [
+            {
+                "$sortField": {
+                    "order": "$sortOrder"
+                }
+            }
+        ]
+        """
+        } else {
+            ""
+        }
+
+        val boolQuery = if (!detailCategory.isNullOrBlank()) {
+            """
+        "bool": {
+            "must": [
+              {
+               $matchQuery
+              },
+                {
+                    "match": {
+                        "detailCategory": "$detailCategory"
+                    }
+                }
+            ]
+        }
+        """
+        } else {
+            matchQuery
+        }
+
+        return """
+        {
+            "from": $from,
+            "size": $size,
+            "query": {
+                $boolQuery
+            }
+            $sortQuery
+        }
+    """.trimIndent()
     }
 }
