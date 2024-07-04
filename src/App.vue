@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      selectedCategory: { description: '선택' },
+      selectedCategory: { description: '선택', secondCategory: '', lastCategory: '', representativeName: '' },
       sortOrder: 'accuracy', // 초기 정렬 순서
       allProducts: [],
       searchQuery: '' // 검색어를 저장하는 데이터
@@ -51,14 +51,27 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get('http://api.market-nawa.store/search', {
-          params: {
-            keyword: this.searchQuery,
-            detailCategory: this.selectedCategory.description !== '선택' ? this.selectedCategory.description : '',
-            order: this.sortOrder,
-            size: 1000 // 최대 1000개의 결과를 가져오도록 설정
-          }
-        });
+        const params = {
+          keyword: this.searchQuery,
+          detailCategory: this.selectedCategory.description !== '선택' ? this.selectedCategory.description : '',
+          order: this.sortOrder,
+          size: 1000 // 최대 1000개의 결과를 가져오도록 설정
+        };
+
+        if (this.selectedCategory.secondCategory) {
+          params.secondCategory = this.selectedCategory.secondCategory;
+        }
+
+        if (this.selectedCategory.lastCategory) {
+          params.lastCategory = this.selectedCategory.lastCategory;
+        }
+
+        if (this.selectedCategory.representativeName) {
+          params.representativeName = this.selectedCategory.representativeName;
+        }
+
+        const response = await axios.get('http://api.market-nawa.store/search', { params });
+
         if (response.data && response.data.data) {
           this.allProducts = Object.values(response.data.data).flat(); // Assuming the data structure is a dictionary with brand-wise lists
           console.log('All Products:', this.allProducts); // 가져온 모든 제품 로그
