@@ -59,7 +59,7 @@ tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
 }
 
 tasks.jar {
-	enabled = false
+	enabled = true
 	manifest {
 		attributes["Main-Class"] = "marketnawa.be.ott.MarketNawaBeApplicationKt"
 	}
