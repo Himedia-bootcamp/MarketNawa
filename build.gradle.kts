@@ -63,3 +63,9 @@ tasks.withType<Test> {
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
 	mainClass.set("marketnawa.be.ott.MarketNawaBeApplicationKt")
 }
+
+tasks.jar {
+	manifest {
+		attributes["Main-Class"] = "marketnawa.be.ott.MarketNawaBeApplicationKt"
+	}
+}
