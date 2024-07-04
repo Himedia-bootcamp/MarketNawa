@@ -16,7 +16,7 @@
       </select>
     </div>
 
-    <div class="radio-container" v-if="selectedLastCategory">
+    <div class="radio-container" v-if="selectedLastCategory && descriptions.length > 0">
       <div v-for="description in descriptions" :key="description" class="radio-item">
         <input type="radio" :id="description" :value="description" v-model="selectedDescription">
         <label :for="description">{{ description }}</label>

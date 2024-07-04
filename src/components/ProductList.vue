@@ -129,6 +129,19 @@ export default {
   margin-top: 150px;
   max-width: 100%;
   height: auto;
+  animation: floating 2s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .sort-dropdown {
