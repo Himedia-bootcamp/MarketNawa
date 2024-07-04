@@ -32,10 +32,10 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 	// JPA
-//	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	// implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
 	// Mysql
-//	runtimeOnly("com.mysql:mysql-connector-j")
+	// runtimeOnly("com.mysql:mysql-connector-j")
 
 	// es
 	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
@@ -58,4 +58,8 @@ kotlin {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+	mainClass.set("marketnawa.be.ott.MarketNawaBeApplicationKt")
 }
