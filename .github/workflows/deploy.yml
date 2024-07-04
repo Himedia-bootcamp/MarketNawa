@@ -23,9 +23,6 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      - name: JAVA_HOME 설정
-        run: echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-
       - name: gradlew 실행 권한 부여
         run: chmod +x ./gradlew
         shell: bash
@@ -34,26 +31,9 @@ jobs:
         run: |
           echo "ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_HOST }}"
           echo "ELASTICSEARCH_PORT=${{ secrets.ELASTICSEARCH_PORT }}"
-          echo "SERVER_PORT=5000"
-
-      - name: Gradle로 빌드
-        run: ./gradlew clean build
         env:
-          JAVA_HOME: ${{ env.JAVA_HOME }}
-
-      - name: 현재 시간 가져오기
-        uses: 1466587594/get-current-time@v2
-        id: current-time
-        with:
-          format: YYYY-MM-DDTHH-mm-ss
-          utcOffset: "+09:00"
-
-      - name: 현재 시간 출력
-        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
-        shell: bash
-
-      - name: Install envsubst
-        run: sudo apt-get install -y gettext
+          ELASTICSEARCH_HOST: ${{ secrets.ELASTICSEARCH_HOST }}
+          ELASTICSEARCH_PORT: ${{ secrets.ELASTICSEARCH_PORT }}
 
       - name: application.yml.template 생성
         run: |
@@ -75,35 +55,31 @@ jobs:
             port: 5000
           EOL
 
-      - name: application-test.yml.template 생성
-        run: |
-          mkdir -p src/test/resources
-          cat > src/test/resources/application-test.yml.template <<EOL
-          spring:
-            application:
-              name: MarketNawaBE
-              admin:
-                enabled: false
-            jmx:
-              enabled: false
-
-          elasticsearch:
-            host: \${ELASTICSEARCH_HOST}
-            port: \${ELASTICSEARCH_PORT}
-
-          server:
-            port: 5000
-          EOL
-
       - name: Yaml 설정
         run: |
           envsubst < src/main/resources/application.yml.template > src/main/resources/application.yml
-          envsubst < src/test/resources/application-test.yml.template > src/test/resources/application-test.yml
           cat src/main/resources/application.yml
-          cat src/test/resources/application-test.yml
         env:
           ELASTICSEARCH_HOST: ${{ secrets.ELASTICSEARCH_HOST }}
           ELASTICSEARCH_PORT: ${{ secrets.ELASTICSEARCH_PORT }}
+
+      - name: Gradle로 빌드
+        run: ./gradlew clean build --info
+        shell: bash
+
+      - name: 현재 시간 가져오기
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
+
+      - name: 현재 시간 출력
+        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
+        shell: bash
+
+      - name: Install envsubst
+        run: sudo apt-get install -y gettext
 
       - name: Generate deployment package
         run: |
