@@ -3,9 +3,8 @@
     <Header />
     <div class="content">
       <CategorySelect @category-selected="onCategorySelected" />
-      <SearchBar @search="performSearch" />
+      <SearchBar :searchQuery="selectedCategory.description" @search="performSearch" />
       <ProductList :products="filteredProducts" :sortOrder.sync="sortOrder" :selectedCategory="selectedCategory" />
-      <Pagination :totalItems="filteredProducts.length" :itemsPerPage="itemsPerPage" @page-changed="onPageChanged" />
     </div>
   </div>
 </template>
@@ -16,7 +15,6 @@ import Header from './components/Header.vue';
 import SearchBar from './components/SearchBar.vue';
 import ProductList from './components/ProductList.vue';
 import CategorySelect from './components/CategorySelect.vue';
-import Pagination from './components/Pagination.vue';
 import './assets/style.css';
 
 export default {
@@ -24,14 +22,11 @@ export default {
     Header,
     SearchBar,
     ProductList,
-    CategorySelect,
-    Pagination
+    CategorySelect
   },
   data() {
     return {
       selectedCategory: { description: '선택' },
-      currentPage: 1,
-      itemsPerPage: 20,
       sortOrder: 'accuracy', // 초기 정렬 순서
       allProducts: [],
       searchQuery: '' // 검색어를 저장하는 데이터
@@ -39,32 +34,34 @@ export default {
   },
   computed: {
     filteredProducts() {
-      // 카테고리 필터링 로직 추가
-      return this.allProducts.filter(product => {
-        const { secondCategory, lastCategory, description } = this.selectedCategory;
-        return (
-          (!secondCategory || product.secondCategory === secondCategory) &&
-          (!lastCategory || product.lastCategory === lastCategory) &&
-          (!description || product.detailCategory === description)
-        );
+      // 카테고리 필터링 및 중복 제거 로직 추가
+      const uniqueProducts = [];
+      const productSet = new Set();
+      this.allProducts.forEach(product => {
+        const identifier = `${product.foodName}`;
+        if (!productSet.has(identifier)) {
+          productSet.add(identifier);
+          uniqueProducts.push(product);
+        }
       });
+      console.log('Filtered Products:', uniqueProducts); // 필터링된 제품 로그
+      return uniqueProducts;
     }
   },
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get('http://localhost:8080/search', {
+        const response = await axios.get('http://api.market-nawa.store/search', {
           params: {
             keyword: this.searchQuery,
             detailCategory: this.selectedCategory.description !== '선택' ? this.selectedCategory.description : '',
             order: this.sortOrder,
-            from: (this.currentPage - 1) * this.itemsPerPage,
-            size: this.itemsPerPage
+            size: 1000 // 최대 1000개의 결과를 가져오도록 설정
           }
         });
-        console.log('Response data:', response.data); // 응답 데이터 로깅
         if (response.data && response.data.data) {
           this.allProducts = Object.values(response.data.data).flat(); // Assuming the data structure is a dictionary with brand-wise lists
+          console.log('All Products:', this.allProducts); // 가져온 모든 제품 로그
         } else {
           console.error('Invalid response format:', response.data);
         }
@@ -82,17 +79,11 @@ export default {
     },
     performSearch(query) {
       this.searchQuery = query;
-      this.currentPage = 1; // 검색 시 페이지를 초기화
       this.fetchProducts(); // Perform search with new query
     },
     onCategorySelected(category) {
       this.selectedCategory = category;
-      this.currentPage = 1; // 카테고리 선택 시 페이지를 초기화
-      this.fetchProducts(); // Perform search with new category
-    },
-    onPageChanged(page) {
-      this.currentPage = page;
-      this.fetchProducts(); // Perform search with new page
+      this.performSearch(category.description); // Perform search with new category
     },
     setSortOrder(order) {
       this.sortOrder = order;
