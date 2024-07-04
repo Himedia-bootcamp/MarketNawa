@@ -1,0 +1,37 @@
+name: PR 리뷰 및 댓글 확인
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  check-reviews-and-comments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 리포지토리 체크아웃
+        uses: actions/checkout@v2
+
+      - name: 풀 리퀘스트 리뷰 및 댓글 가져오기
+        id: get_reviews_and_comments
+        run: |
+          REVIEWS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" | jq -r '.[].user.login' | tr '\n' ' ')
+          COMMENTS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" | jq -r '.[].user.login' | tr '\n' ' ')
+          ALL_USERS="$REVIEWS $COMMENTS"
+          echo "ALL_USERS=\"$ALL_USERS\"" >> $GITHUB_ENV
+
+      - name: 고유 사용자 확인
+        run: |
+          echo "ALL_USERS=$ALL_USERS"
+          UNIQUE_USERS=$(echo "$ALL_USERS" | tr ' ' '\n' | sort | uniq | wc -l)
+          echo "Unique Users Count: $UNIQUE_USERS"
+          if [ "$UNIQUE_USERS" -lt 2 ]; then
+            echo "고유 리뷰어 및 댓글 작성자가 충분하지 않습니다. 머지 전에 최소 2명의 고유 리뷰어 또는 댓글 작성자가 있어야 합니다."
+            exit 1
+          fi
+        env:
+          ALL_USERS: ${{ env.ALL_USERS }}

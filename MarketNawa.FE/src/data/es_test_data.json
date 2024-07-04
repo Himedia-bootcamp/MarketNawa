@@ -1,0 +1,113 @@
+{
+"Gmarket": {
+"data": [
+      {
+          "food_name": "1정관장상품명정관장 홍삼본원스틱 10g 30포 4세트-6년근 홍삼농축액 홍삼정 활기력 홍삼원 골드",
+          "food_price": 153900,
+          "food_info": "",
+          "first_category": "식품",
+          "second_category": "건강식품/홍삼",
+          "last_category": "홍삼",
+          "detail_category": "https://image.gmarket.co.kr/hanbando/202407/40d424f7-6269-490c-9f07-cc55d1292ec6.png?date=20240702",
+          "food_description": "",
+          "representative_name": "http://item.gmarket.co.kr/Item?goodscode=3480800277",
+          "food_marketbrand": "Gmarket"
+      },
+      {
+        "_index": "market_food",
+        "_id": "c7a8b356-1120-4d2c-8dd1-dee0be415848",
+        "_score": 1,
+        "_source": {
+          "_class": "marketnawa.domain.MarketFood",
+          "food_id": "c7a8b356-1120-4d2c-8dd1-dee0be415848",
+          "food_name": "1상품명리튠 금강 진액고 홍삼정(120g80회분)",
+          "food_price": 63000,
+          "food_info": "",
+          "first_category": "식품",
+          "second_category": "건강식품/홍삼",
+          "last_category": "홍삼",
+          "detail_category": "https://gdimg.gmarket.co.kr/3486077054/still/280?ver=1716257082",
+          "food_description": "",
+          "representative_name": "http://item.gmarket.co.kr/Item?goodscode=3486077054",
+          "food_marketbrand": "Gmarket"
+        }
+      }
+    ]
+   
+},
+"SSG": {
+"data": [
+      {
+          "food_name": "2정관장상품명정관장 홍삼본원스틱 10g 30포 4세트-6년근 홍삼농축액 홍삼정 활기력 홍삼원 골드",
+          "food_price": 153900,
+          "food_info": "",
+          "first_category": "식품",
+          "second_category": "건강식품/홍삼",
+          "last_category": "홍삼",
+          "detail_category": "https://image.gmarket.co.kr/hanbando/202407/40d424f7-6269-490c-9f07-cc55d1292ec6.png?date=20240702",
+          "food_description": "",
+          "representative_name": "http://item.gmarket.co.kr/Item?goodscode=3480800277",
+          "food_marketbrand": "Gmarket"
+      },
+      {
+        "_index": "market_food",
+        "_id": "c7a8b356-1120-4d2c-8dd1-dee0be415848",
+        "_score": 1,
+        "_source": {
+          "_class": "marketnawa.domain.MarketFood",
+          "food_id": "c7a8b356-1120-4d2c-8dd1-dee0be415848",
+          "food_name": "2상품명리튠 금강 진액고 홍삼정(120g80회분)",
+          "food_price": 63000,
+          "food_info": "",
+          "first_category": "식품",
+          "second_category": "건강식품/홍삼",
+          "last_category": "홍삼",
+          "detail_category": "https://gdimg.gmarket.co.kr/3486077054/still/280?ver=1716257082",
+          "food_description": "",
+          "representative_name": "http://item.gmarket.co.kr/Item?goodscode=3486077054",
+          "food_marketbrand": "Gmarket"
+        }
+      }
+    ]
+   },
+"coupang": {
+"data": [
+      {
+          "food_name": "3정관장상품명정관장 홍삼본원스틱 10g 30포 4세트-6년근 홍삼농축액 홍삼정 활기력 홍삼원 골드",
+          "food_price": 153900,
+          "food_info": "",
+          "first_category": "식품",
+          "second_category": "건강식품/홍삼",
+          "last_category": "홍삼",
+          "detail_category": "https://image.gmarket.co.kr/hanbando/202407/40d424f7-6269-490c-9f07-cc55d1292ec6.png?date=20240702",
+          "food_description": "",
+          "representative_name": "http://item.gmarket.co.kr/Item?goodscode=3480800277",
+          "food_marketbrand": "Gmarket"
+      },
+      {
+        "_index": "market_food",
+        "_id": "c7a8b356-1120-4d2c-8dd1-dee0be415848",
+        "_score": 1,
+        "_source": {
+          "_class": "marketnawa.domain.MarketFood",
+          "food_id": "c7a8b356-1120-4d2c-8dd1-dee0be415848",
+          "food_name": "3상품명리튠 금강 진액고 홍삼정(120g80회분)",
+          "food_price": 63000,
+          "food_info": "",
+          "first_category": "식품",
+          "second_category": "건강식품/홍삼",
+          "last_category": "홍삼",
+          "detail_category": "https://gdimg.gmarket.co.kr/3486077054/still/280?ver=1716257082",
+          "food_description": "",
+          "representative_name": "http://item.gmarket.co.kr/Item?goodscode=3486077054",
+          "food_marketbrand": "coupang"
+        }
+      }
+    ]
+   }
+
+
+
+
+}
+
