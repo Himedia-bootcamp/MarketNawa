@@ -31,12 +31,6 @@ dependencies {
 	// Devtools
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-	// JPA
-	// implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
-	// Mysql
-	// runtimeOnly("com.mysql:mysql-connector-j")
-
 	// es
 	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
 	implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.13.4")
