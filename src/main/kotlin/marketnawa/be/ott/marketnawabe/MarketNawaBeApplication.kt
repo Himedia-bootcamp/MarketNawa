@@ -9,5 +9,3 @@ class MarketNawaBeApplication
 fun main(args: Array<String>) {
 	runApplication<MarketNawaBeApplication>(*args)
 }
-
-
