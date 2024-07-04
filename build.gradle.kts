@@ -37,12 +37,12 @@ tasks.withType<Test> {
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-	mainClass.set("marketnawa.be.ott.marketnawabe.MarketNawaBeApplication")
+	mainClass.set("marketnawa.be.ott.marketnawabe.MarketNawaBeApplicationKt")
 }
 
 tasks.jar {
-	enabled = true
+	enabled = false
 	manifest {
-		attributes["Main-Class"] = "marketnawa.be.ott.marketnawabe.MarketNawaBeApplication"
+		attributes["Main-Class"] = "marketnawa.be.ott.marketnawabe.MarketNawaBeApplicationKt"
 	}
 }
