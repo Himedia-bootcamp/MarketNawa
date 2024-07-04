@@ -40,9 +40,6 @@ class ElasticsearchUtil @Autowired constructor(
     }
 
     fun findAll(indexName: String, from: Int = 0, size: Int = 10): List<Map<String, Any>> {
-//        val uri = URI.create("${elasticsearchProperties.host}:${elasticsearchProperties.port}/$indexName/_search")
-//        val jsonResponse = executeHttpRequest("GET", uri)
-//        return parseSearchResponse(jsonResponse)
         val uri = URI.create("${elasticsearchProperties.host}:${elasticsearchProperties.port}/$indexName/_search")
             val query = """
             {
@@ -73,12 +70,21 @@ class ElasticsearchUtil @Autowired constructor(
         return responseMap?.get("count") as Int
     }
 
-    fun search(indexName: String, keyword: String?, market: String?, order: String?, from: Int = 0, size: Int = 10): List<Map<String, Any>> {
+    fun search(
+        indexName: String,
+        keyword: String?,
+        market: String?,
+        order: String?,
+        secondCategory: String?,
+        lastCategory: String?,
+        representativeName: String?,
+        from: Int = 0,
+        size: Int = 10
+    ): List<Map<String, Any>> {
         val uri = URI.create("${elasticsearchProperties.host}:${elasticsearchProperties.port}/$indexName/_search")
 
         // 쿼리 JSON 생성
-        val query = buildQuery(keyword, market, order, from, size)
-        println(query)
+        val query = buildQuery(keyword, market, order, secondCategory, lastCategory, representativeName, from, size)
         // HTTP 요청 실행
         val jsonResponse = executeHttpRequest("POST", uri, query)
 
@@ -135,22 +141,16 @@ class ElasticsearchUtil @Autowired constructor(
         return objectMapper.writeValueAsString(obj)
     }
 
-    private fun buildQuery(keyword: String?, market: String?, order: String?, from: Int, size: Int): String {
-        val matchQuery = if (!keyword.isNullOrBlank()) {
-            """
-        
-            "match": {
-                "foodName": "$keyword"
-            }
-        
-        """
-        } else {
-            """
-        {
-            "match_all": {}
-        }
-        """
-        }
+    private fun buildQuery(
+        keyword: String?,
+        market: String?,
+        order: String?,
+        secondCategory: String?,
+        lastCategory: String?,
+        representativeName: String?,
+        from: Int,
+        size: Int
+    ): String {
 
         val sortField = when (order) {
             "highest" -> "foodPrice"
@@ -163,6 +163,7 @@ class ElasticsearchUtil @Autowired constructor(
             "lowest" -> "asc"
             else -> null
         }
+
 
         val sortQuery = if (sortField != null && sortOrder != null) {
             """
@@ -178,24 +179,63 @@ class ElasticsearchUtil @Autowired constructor(
             ""
         }
 
-        val boolQuery = if (!market.isNullOrBlank()) {
-            """
-        "bool": {
-            "must": [
-              {
-               $matchQuery
-              },
-                {
-                    "match": {
-                        "foodMarketBrand": "$market"
-                    }
+        val boolMustQueries = mutableListOf<String>()
+
+        if (!keyword.isNullOrBlank()) {
+            boolMustQueries.add("""
+            {
+                "match": {
+                    "foodName": "$keyword"
                 }
-            ]
+            }
+        """)
         }
-        """
-        } else {
-            matchQuery
+
+        if (!market.isNullOrBlank()) {
+            boolMustQueries.add("""
+            {
+                "match": {
+                    "foodMarketBrand": "$market"
+                }
+            }
+        """)
         }
+
+        if (!secondCategory.isNullOrBlank()) {
+            boolMustQueries.add("""
+            {
+                "match": {
+                    "secondCategory": "$secondCategory"
+                }
+            }
+        """)
+        }
+
+        if (!lastCategory.isNullOrBlank()) {
+            boolMustQueries.add("""
+            {
+                "match": {
+                    "lastCategory": "$lastCategory"
+                }
+            }
+        """)
+        }
+
+        if (!representativeName.isNullOrBlank()) {
+            boolMustQueries.add("""
+            {
+                "match": {
+                    "representativeName": "$representativeName"
+                }
+            }
+        """)
+        }
+
+        val boolQuery = """
+        "bool": {
+            "must": [${boolMustQueries.joinToString(",")}]
+        }
+    """
 
         return """
         {

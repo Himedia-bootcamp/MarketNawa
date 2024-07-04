@@ -16,7 +16,16 @@ class SearchService(
 
     val index: String = "market_food"
 
-    fun searchByFoodName(indexName: String, keyword: String?, order: String?, from: Int = 0, size: Int = 10): Map<String, MutableList<MarketFoodDTO>> {
+    fun searchByFoodName(
+        indexName: String,
+        keyword: String?,
+        order: String?,
+        secondCategory: String?,
+        lastCategory: String?,
+        representativeName: String?,
+        from: Int = 0,
+        size: Int = 10
+    ): Map<String, MutableList<MarketFoodDTO>> {
 
         var ssgDTOList: MutableList<MarketFoodDTO> = mutableListOf()
         var coupangDTOList: MutableList<MarketFoodDTO> = mutableListOf()
@@ -24,7 +33,7 @@ class SearchService(
 
         fun searchAndAddToDTOList(market: String, dtoList: MutableList<MarketFoodDTO>) {
             try {
-                val searchList = elasticsearchUtil.search(indexName, keyword, market, order, from, size)
+                val searchList = elasticsearchUtil.search(indexName, keyword, market, order, secondCategory, lastCategory, representativeName, from, size)
                 searchList.forEach { hits ->
                     val source = hits["_source"] as? Map<String, Any>
                     val marketFood = MarketFoodDTO(
