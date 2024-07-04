@@ -1,18 +1,26 @@
 <!-- src/components/Header.vue -->
 <template>
-    <header class="header">
-      <div class="logo">MARKETNAWA</div>
-      <div class="icons">
-        <i class="fas fa-shopping-cart"></i>
-        <i class="fas fa-user"></i>
-      </div>
-    </header>
-  </template>
-  
-  <script>
-  export default {
-  };
-  </script>
+  <header class="header">
+    <div class="logo" @click="goToHome">MARKETNAWA</div>
+    <div class="icons">
+      <i class="fas fa-shopping-cart" @click="showAlert"></i>
+      <i class="fas fa-user" @click="showAlert"></i>
+    </div>
+  </header>
+</template>
+
+<script>
+export default {
+  methods: {
+    goToHome() {
+      window.location.href = '/';
+    },
+    showAlert() {
+      alert('준비중입니다.');
+    }
+  }
+};
+</script>
   
   <style scoped>
   .header {
@@ -34,6 +42,7 @@
   .logo {
     font-size: 1.8em;
     font-weight: bold;
+    cursor: pointer;
   }
   
   .icons {

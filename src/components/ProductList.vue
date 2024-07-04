@@ -1,7 +1,10 @@
 <template>
   <div class="product-list">
     <div v-if="isCategoryDefault" class="no-category">
-      <img :src="logo" alt="Marketnawa Logo" class="marketnawa-logo">
+      <img :src="logo" alt="Marketnawa Logo" class="marketnawa-logo" @click="triggerEasterEgg">
+      <div v-if="showEasterEgg" class="easter-egg">
+        <p> 🐣 이스터에그 발견!! 🐣 <br> 팀 5tt!~ <br> 저희 MARKETNAWA에서 상품의 가격을 비교해보세요! </p>
+      </div>
     </div>
     <div v-else>
       <div class="sort-dropdown">
@@ -60,7 +63,8 @@ export default {
     return {
       selectedSortOrder: this.sortOrder,
       allBrands: ['Gmarket', 'SSG', 'coupang'],
-      logo: marketnawaLogo
+      logo: marketnawaLogo,
+      showEasterEgg: false
     };
   },
   computed: {
@@ -108,6 +112,12 @@ export default {
       if (str.length <= maxLength) return str;
       const keep = maxLength / 2;
       return str.slice(0, keep) + '...' + str.slice(str.length - keep);
+    },
+    triggerEasterEgg() {
+      this.showEasterEgg = true;
+      setTimeout(() => {
+        this.showEasterEgg = false;
+      }, 3000); // 2초 후에 이스터에그 창을 숨깁니다.
     }
   },
   watch: {
@@ -128,6 +138,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 400px; /* Adjust height as needed */
+  position: relative; /* 이스터에그 위치를 상대적으로 설정 */
 }
 
 .marketnawa-logo {
@@ -135,6 +146,22 @@ export default {
   max-width: 100%;
   height: auto;
   animation: floating 2s ease-in-out infinite;
+  /* cursor: pointer; */
+}
+
+.easter-egg {
+  position: absolute;
+  height: 500px;
+  width: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 2px solid #000;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: fade-in-out 2s ease-in-out forwards;
 }
 
 @keyframes floating {
@@ -146,6 +173,18 @@ export default {
   }
   100% {
     transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
