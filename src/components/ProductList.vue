@@ -23,7 +23,7 @@
               <div v-for="product in sortedProductsByBrand(brand)" :key="`${product.foodId}-${product.foodName}`" class="product-item" @click="navigateToProduct(product.foodLink)">
                 <img :src="product.foodImg" alt="Product Image" class="product-image">
                 <div class="product-info">
-                  <h3>{{ product.foodName }}</h3>
+                  <h3>{{ truncateMiddle(product.foodName, 25) }}</h3>
                   <p>{{ formatPrice(product.foodPrice) }}</p>
                 </div>
               </div>
@@ -103,6 +103,11 @@ export default {
     },
     navigateToProduct(url) {
       window.open(url, '_blank');
+    },
+    truncateMiddle(str, maxLength) {
+      if (str.length <= maxLength) return str;
+      const keep = maxLength / 2;
+      return str.slice(0, keep) + '...' + str.slice(str.length - keep);
     }
   },
   watch: {
