@@ -30,6 +30,12 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
 
+      - name: 환경 변수 출력
+        run: |
+          echo "ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_HOST }}"
+          echo "ELASTICSEARCH_PORT=${{ secrets.ELASTICSEARCH_PORT }}"
+          echo "SERVER_PORT=5000"
+
       - name: Gradle로 빌드
         run: ./gradlew clean build
         env:
