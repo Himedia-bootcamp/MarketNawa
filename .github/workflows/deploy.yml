@@ -23,13 +23,17 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+      - name: JAVA_HOME 설정
+        run: echo "JAVA_HOME_17_X64=$JAVA_HOME" >> $GITHUB_ENV
+
       - name: gradlew 실행 권한 부여
         run: chmod +x ./gradlew
         shell: bash
 
       - name: Gradle로 빌드
         run: ./gradlew clean build
-        shell: bash
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
 
       - name: 현재 시간 가져오기
         uses: 1466587594/get-current-time@v2
