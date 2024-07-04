@@ -23,6 +23,43 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
 
+      - name: 환경 변수 출력
+        run: |
+          echo "ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_HOST }}"
+          echo "ELASTICSEARCH_PORT=${{ secrets.ELASTICSEARCH_PORT }}"
+        env:
+          ELASTICSEARCH_HOST: ${{ secrets.ELASTICSEARCH_HOST }}
+          ELASTICSEARCH_PORT: ${{ secrets.ELASTICSEARCH_PORT }}
+
+      - name: application.yml.template 생성
+        run: |
+          mkdir -p src/main/resources
+          cat > src/main/resources/application.yml.template <<EOL
+          spring:
+            application:
+              name: MarketNawaBE
+              admin:
+                enabled: false
+            jmx:
+              enabled: false
+
+          elasticsearch:
+            host: \${ELASTICSEARCH_HOST}
+            port: \${ELASTICSEARCH_PORT}
+
+          server:
+            port: 5000
+
+          EOL
+
+      - name: Yaml 설정
+        run: |
+          envsubst < src/main/resources/application.yml.template > src/main/resources/application.yml
+          cat src/main/resources/application.yml
+        env:
+          ELASTICSEARCH_HOST: ${{ secrets.ELASTICSEARCH_HOST }}
+          ELASTICSEARCH_PORT: ${{ secrets.ELASTICSEARCH_PORT }}
+
       - name: Gradle로 빌드
         run: ./gradlew clean build
         shell: bash
