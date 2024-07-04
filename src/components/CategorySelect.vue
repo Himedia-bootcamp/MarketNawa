@@ -54,6 +54,7 @@ export default {
         this.categories
           .filter(c => c.second_category === this.selectedSecondCategory && c.last_category === this.selectedLastCategory)
           .map(c => c.description)
+          .filter(description => description && description.trim() !== "")
       )];
     }
   },
