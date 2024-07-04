@@ -15,4 +15,3 @@ data class ResponseDTO(
 
     constructor(message: String) : this(0, message, null)
 }
-
