@@ -17,10 +17,10 @@ class SearchController (
     @GetMapping("/search")
     fun searchByFoodName(
         @RequestParam keyword: String,
-        @RequestParam order: String = "",
-        @RequestParam secondCategory: String = "",
-        @RequestParam lastCategory: String = "",
-        @RequestParam representativeName: String = "",
+        @RequestParam order: String? = null,
+        @RequestParam secondCategory: String? = null,
+        @RequestParam lastCategory: String? = null,
+        @RequestParam representativeName: String? = null,
         @RequestParam from: Int = 0,
         @RequestParam size: Int = 10,
     ) : ResponseEntity<Any> {
