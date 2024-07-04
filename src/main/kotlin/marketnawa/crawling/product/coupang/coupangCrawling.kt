@@ -2,6 +2,7 @@ package marketnawa.crawling.product.coupang
 
 import marketnawa.domain.Category
 import marketnawa.domain.MarketFood
+import marketnawa.elasitcsearch.EsSearchService
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.firefox.FirefoxDriver
@@ -18,7 +19,7 @@ fun extractPrice(text: String): String {
 
 class CoupCrawler(
     val category: Category,
-    private val elasticsearchOperations: ElasticsearchOperations
+    private val esSearchService: EsSearchService
 ) {
     fun execute() {
 
@@ -73,14 +74,12 @@ class CoupCrawler(
                         firstCategory = category.firstCategory,
                         secondCategory = category.secondCategory,
                         lastCategory = category.lastCategory,
-                        representativeName = category.desscription,
+                        detailCategory = category.desscription,
+                        representativeName = "",
                         foodMarketBrand = "coupang"
                     )
-
-                    //gmarket, ssg
-
                     if (marketFood != null) {
-                        elasticsearchOperations.save(marketFood)
+                        esSearchService.indexDocument("market_food", marketFood)
                     }
                 }
                 driver.manage().deleteAllCookies()

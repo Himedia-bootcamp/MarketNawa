@@ -10,6 +10,8 @@ import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.firefox.FirefoxOptions
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.client.elc.NativeQuery
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
@@ -41,13 +43,14 @@ class GmarketCrawler(
 
         val url = "https://www.gmarket.co.kr"
 
-        val webDriverID = "webdriver.chrome.driver"
-        val webDriverPath = "C:/drivers/chromedriver.exe" // 실제 크롬 드라이버 경로로 변경
+        val webDriverID = "webdriver.gecko.driver"
+        val webDriverPath = "/Users/seung/Downloads/geckodriver"
         System.setProperty(webDriverID, webDriverPath)
 
-        val options = ChromeOptions()
-        options.addArguments("--headless")
-        val driver: WebDriver = ChromeDriver(options)
+        val options = FirefoxOptions()
+        options.addArguments("--headless") // 브라우저를 화면에 표시하지 않고 실행 (옵션)
+
+        val driver: WebDriver = FirefoxDriver(options)
 
         try {
             val searchText = category.searchText
@@ -97,7 +100,8 @@ class GmarketCrawler(
                                 firstCategory = category.firstCategory,
                                 secondCategory = category.secondCategory,
                                 lastCategory = category.lastCategory,
-                                representativeName = category.desscription,
+                                detailCategory = category.desscription,
+                                representativeName = "",
                                 foodMarketBrand = "Gmarket"
                             )
 
