@@ -77,4 +77,10 @@
 
 <details><summary><b>테스트 결과</b></summary>
 
+https://github.com/Himedia-bootcamp/MarketNawa/assets/80388847/d5dbdbb1-907c-46a0-87bf-b24e7ed1e0a4
+
 </details>
+
+
+
+
