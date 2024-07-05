@@ -79,6 +79,10 @@
 
 https://github.com/Himedia-bootcamp/MarketNawa/assets/80388847/d5dbdbb1-907c-46a0-87bf-b24e7ed1e0a4
 
+<br>
+
+[Video Download Link](https://github.com/Himedia-bootcamp/MarketNawa/blob/3271f7b37f50af302ba4af74aca99d2105171361/img/market-nawa-video.mov)
+
 </details>
 
 
