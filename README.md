@@ -5,22 +5,25 @@
 ###  팀원 :
 
 [<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/mini-xi) <strong>&nbsp;&nbsp;배성민</strong> <br>
+[<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/Virtue14) <strong>&nbsp;&nbsp;박경덕</strong> <br>
+[<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/jcy168942) <strong>&nbsp;&nbsp;정찬용</strong> <br>
+[<img src="https://img.shields.io/badge/Github-Link-ffffff?logo=Github">](https://github.com/miniato2) <strong>&nbsp;&nbsp;최승욱</strong> <br>
 
 ## 1. 프로젝트 소개
 
-개요 :
+<summary><b>주제 및 목표</b></summary>
 
-<details><summary><b>주제 및 목표</b></summary>
+<br>
 
-> 주제 : 검색엔진을 활용한 섹션 플랫폼
+> <b>주제 : 검색엔진을 활용한 섹션 플랫폼</b><br>
 <br> 온라인 쇼핑의 대중화로 인해 다양한 쇼핑몰에서 상품을 비교하고 최저가를 찾는 것이 매우 중요해졌습니다. G마켓, 쿠팡, SSG와 같은 인기 쇼핑몰에서 제공하는 상품 정보를 한 곳에 모아, 사용자가 쉽게 비교할 수 있는 플랫폼의 필요성이 커졌습니다. 본 프로젝트는 이러한 필요성을 충족시키고, 사용자가 더 합리적이고 현명한 소비를 할 수 있도록 돕기 위해 시작되었습니다.
+<br>
 
-> 목표 :
-<br>다양한 쇼핑몰의 상품 정보 수집
-<br>효율적인 데이터 검색
-<br>상품 비교 기능 제공
+> <b>목표 :</b>
+<br>1. 다양한 쇼핑몰의 상품 정보 수집
+<br>2. 효율적인 데이터 검색
+<br>3. 상품 비교 기능 제공
 
-</details>
 
 ## ⚙️ Stack / Tool
 
