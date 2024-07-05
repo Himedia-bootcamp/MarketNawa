@@ -58,8 +58,8 @@
 
 [1. WBS](https://docs.google.com/spreadsheets/d/1jvoKqp3NGzzegz2JJBvKO5IRRKYIRiAfsd_VLdNu83Q/edit?gid=0#gid=0) <br><br>
 [2. 요구사항 명세서](https://docs.google.com/spreadsheets/d/1jvoKqp3NGzzegz2JJBvKO5IRRKYIRiAfsd_VLdNu83Q/edit?gid=815044917#gid=815044917) <br><br>
-[3. Modeling]() <br><br>
-[4. 화면설계서]()<br><br>
+[3. Modeling](https://github.com/Himedia-bootcamp/MarketNawa/blob/80bc7ee4c7aedda2d4a1e5dddb9aa934fec1b1a7/img/marketnawa-modeling.png) <br><br>
+[4. 화면설계서](https://github.com/Himedia-bootcamp/MarketNawa/blob/80bc7ee4c7aedda2d4a1e5dddb9aa934fec1b1a7/img/marketnawa-screen.png)<br><br>
 
 
 </details>
@@ -68,7 +68,7 @@
 <details>
 <summary><b>Architecture Image</b></summary>
 
-<img src=""/>
+<img src="https://github.com/Himedia-bootcamp/MarketNawa/blob/80bc7ee4c7aedda2d4a1e5dddb9aa934fec1b1a7/img/marketnawa-architecture.png"/>
 
 </details>
 
